@@ -1,0 +1,22 @@
+[
+    {
+        "key": "spr_item_1",
+        "url": "assets/images/itemspeed.png",
+        "type": "sprite"
+    },
+    {
+        "key": "tspr_item_2",
+        "url": "assets/images/khien.png",
+        "type": "sprite"
+    },
+    {
+        "key": "spr_item_3",
+        "url": "assets/images/x2.png",
+        "type": "sprite"
+    },
+    {
+        "key": "box",
+        "url": "assets/model/cube.glb",
+        "type": "model"
+    }
+]

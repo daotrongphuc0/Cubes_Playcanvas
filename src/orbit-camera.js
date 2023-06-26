@@ -1,3 +1,4 @@
+
 export function loadObitCameraPlugin() {
   var OrbitCamera = pc.createScript("orbitCamera")
 

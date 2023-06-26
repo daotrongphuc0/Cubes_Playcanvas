@@ -1,8 +1,9 @@
 import * as pc from "playcanvas";
 import assetsData from "../../assets/json/assetsData.json";
+import { Game } from "../game";
 
 export class AssetsLoader {
-    static loadAssets(app, callback) {
+    static loadAssets(app) {
         this.app = app
         this.assets = []
         assetsData.forEach(element => {
@@ -11,17 +12,25 @@ export class AssetsLoader {
             });
             this.assets.push(asset);
         });
-        const assetListLoader = new pc.AssetListLoader(
+        this.assetListLoader = new pc.AssetListLoader(
             this.assets,
             this.app.assets
         );
-        assetListLoader.load((err, failed) => {
+        this.assetListLoader.load((err) => {
             if (err) {
-                console.error(`${failed.length} assets failed to load`);
+                console.log("false to load")
             } else {
-                console.log(`${assets.length} assets loaded`);
-                callback()
+                console.log("loaded")
+                Game.load()
             }
         });
     }
+
+    static getAssetByKey(id) {
+        return this.assets.find((asset) => asset.name === id);
+    }
+
+
+
+
 }

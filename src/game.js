@@ -1,34 +1,32 @@
-import { Application, StandardMaterial, Color, FILLMODE_FILL_WINDOW, RESOLUTION_AUTO } from "playcanvas";
+import { Application, ElementInput, Keyboard, Mouse, TouchDevice, StandardMaterial, Color, RESOLUTION_AUTO, FILLMODE_FILL_WINDOW } from "playcanvas";
 import { Background } from "./Object/Background";
 import { AssetsLoader } from "./assets/AssetsLoader";
 import { loadObitCameraPlugin } from "../src/orbit-camera";
 import { Camera } from "./Object/Camera";
-// import * as pc from "playcanvas"
+import * as pc from "playcanvas"
+import { Box } from "./Object/Box";
 
 export class Game {
     static init() {
         const canvas = document.createElement("canvas");
         document.body.appendChild(canvas);
-        this.app = new Application(canvas, {});
+        this.app = new Application(canvas, {
+            elementInput: new ElementInput(canvas),
+            keyboard: new Keyboard(window),
+            mouse: new Mouse(canvas),
+            touch: new TouchDevice(canvas),
+        });
         this.app.setCanvasFillMode(FILLMODE_FILL_WINDOW);
         this.app.setCanvasResolution(RESOLUTION_AUTO);
         this.app.graphicsDevice.maxPixelRatio = window.devicePixelRatio;
-        AssetsLoader.loadAssets(this.app, this.load())
+        loadObitCameraPlugin();
+        AssetsLoader.loadAssets(this.app)
         this.app.start();
-
     }
 
     static load() {
-        // create material
-        this.material = new StandardMaterial();
-        this.material.diffuse.set(1, 0, 0);
-        this.material.outlineColor = new Color(0, 1, 0); // Màu viền (ở đây là màu xanh lá cây)
-        this.material.outlineThickness = 0.9;
-        // this.material.tin
-        this.material.update()
 
         // camera
-        loadObitCameraPlugin();
         this.camera = new Camera("camera");
         this.app.root.addChild(this.camera)
 
@@ -42,12 +40,8 @@ export class Game {
         this.app.root.addChild(new Background())
 
         // Tạo đối tượng hộp
-        this.box1 = new pc.Entity("box1");
-        this.box1.addComponent("model", { type: "box", material: this.material });
-        this.box1.setLocalScale(0.3, 0.3, 0.3)
-        this.box1.setLocalPosition(0, 0.5, 0)
-        this.box1.setLocalEulerAngles(0, 0, 0)
-        this.app.root.addChild(this.box1);
+        this.box = new Box("box", 2);
+        this.app.root.addChild(this.box);
 
         // this.time = 1
         // this.iii = 1

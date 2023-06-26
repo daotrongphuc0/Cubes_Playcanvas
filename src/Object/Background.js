@@ -15,10 +15,10 @@ export class Background extends pc.Entity {
             type: "plane",
             material: this.material,
         });
-        this.setLocalScale(10, 0, 10)
-        this.setLocalScale(8.24, 0, 7.96)
+        this.setLocalScale(50, 0, 50)
         this.setLocalPosition(0, 0, 0)
         this.setLocalEulerAngles(0, 0, 0)
+
 
     }
 }

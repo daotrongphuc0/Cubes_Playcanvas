@@ -15,8 +15,8 @@ export class Camera extends pc.Entity {
         this.addComponent("script");
         this.script.create("orbitCamera", {
             attributes: {
-                inertiaFactor: 0.3, // Override default of 0 (no inertia)
-                distanceMax: 10,
+                inertiaFactor: 0.1, // Override default of 0 (no inertia)
+                distanceMax: 100,
                 distanceMin: 1,
                 pitchAngleMax: 90,
                 pitchAngleMin: -90,
@@ -24,7 +24,6 @@ export class Camera extends pc.Entity {
                 frameOnStart: true
             },
         });
-
         this.script.create("orbitCameraInputMouse");
         this.script.create("orbitCameraInputTouch");
 

@@ -17,9 +17,9 @@ export const GameConstant = Object.freeze({
     SCREEN_MAP_EDITOR: "MapEditorScreen",
     SCREEN_PLAY: "PlayScreen",
 
-    DEFAULT_SCALE_BOX_MIN: 0.3,
-    DEFAULT_SCALE_SIZE_INCREASE: 0.3,
-    DEFAULT_SCALE_BOX_MAX: 0.5,
+    DEFAULT_SCALE_BOX_MIN: 0.5,
+    DEFAULT_SCALE_SIZE_INCREASE: 0.1,
+    DEFAULT_SCALE_BOX_MAX: 1,
     DEFAULT_COLOR_BOX: (0, 1, 0)
 
 });

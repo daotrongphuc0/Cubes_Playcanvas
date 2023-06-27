@@ -10,13 +10,13 @@ export class Camera extends pc.Entity {
 
 
         this.setLocalScale(1, 1, 1)
-        this.setLocalPosition(0.012, 3.865, 6.93)
-        this.setLocalEulerAngles(-30, 0, 0);
+        this.setLocalPosition(-10, 25, 0)
+        this.setLocalEulerAngles(0, -90, -65);
         this.addComponent("script");
         this.script.create("orbitCamera", {
             attributes: {
                 inertiaFactor: 0.1, // Override default of 0 (no inertia)
-                distanceMax: 100,
+                distanceMax: 50,
                 distanceMin: 1,
                 pitchAngleMax: 90,
                 pitchAngleMin: -90,
@@ -26,7 +26,5 @@ export class Camera extends pc.Entity {
         });
         this.script.create("orbitCameraInputMouse");
         this.script.create("orbitCameraInputTouch");
-
-
     }
 }

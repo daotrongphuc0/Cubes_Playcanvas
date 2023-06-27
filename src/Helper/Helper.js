@@ -20,8 +20,10 @@ export class Helper {
 
     static getScaleByNumber(number) {
         var i = Math.log2(number)
-        return GameConstant.DEFAULT_SCALE_BOX_MIN +
-            (GameConstant.DEFAULT_SCALE_BOX_MAX - GameConstant.DEFAULT_SCALE_BOX_MIN) / ((1 / (GameConstant.DEFAULT_SCALE_SIZE_INCREASE * i)) + 1)
+        // console.log(i);
+        // return GameConstant.DEFAULT_SCALE_BOX_MAX * (1 - (1 / i))
+        // return GameConstant.DEFAULT_SCALE_BOX_MIN + (Math.log(i) / 1.5) * (GameConstant.DEFAULT_SCALE_BOX_MIN)
+        return GameConstant.DEFAULT_SCALE_BOX_MIN + (Math.log(i) / 3.5) * (GameConstant.DEFAULT_SCALE_BOX_MAX - GameConstant.DEFAULT_SCALE_BOX_MIN)
     }
 
     static getColorByNumber(number) {
@@ -32,4 +34,21 @@ export class Helper {
         var blue = (i * 71) % 256;
         return new pc.Color(1 - (red / 255), 1 - (green / 255), 1 - (blue / 255));
     }
+
+    static getStringByNumber(number) {
+        if (number < 10000) {
+            return number + ""
+        }
+        if (number >= 10000 && number < 1000000) {
+            return Math.floor(number / 1000) + "K"
+        }
+        if (number >= 1000000 && number < 1000000000) {
+            return Math.floor(number / 1000000) + "M"
+        }
+        if (number >= 1000000000) {
+            return Math.floor(number / 1000000000) + "B"
+        }
+    }
+
+
 }

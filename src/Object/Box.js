@@ -1,24 +1,60 @@
-import { Entity, StandardMaterial, Color } from "playcanvas";
+import { Entity, StandardMaterial, Color, Vec3 } from "playcanvas";
 import { AssetsLoader } from "../assets/AssetsLoader";
+import { Helper } from "../Helper/Helper";
 
 export class Box extends Entity {
     constructor(name = null, number = 2) {
         super(name);
 
-        // create material
-        this.material = new StandardMaterial();
-        this.material.diffuse.set(0.8, 0.5, 0.5);
-        this.material.update()
-
-
         this.number = number;
         this.nextBox = null;
+        this.lastTrans = new Vec3(0, 0, 0)
+
+
+        // create material
+        this.material = new StandardMaterial();
+        this.material.diffuse = Helper.getColorByNumber(this.number);
+        this.material.update()
 
         this.modelAsset = AssetsLoader.getAssetByKey("box")
         this.boxModel = new Entity()
-        this.boxModel.addComponent("model", { asset: this.modelAsset, material: this.material });
-        this.boxModel.setLocalPosition(0, 0.5, 0)
+        this.boxModel.addComponent("model", { asset: this.modelAsset });
+        this.boxModel.model.meshInstances[0].material = this.material
+        this.boxModel.setLocalPosition(0, 0, 0)
         this.boxModel.setLocalEulerAngles(0, 0, 0)
+        var scale = Helper.getScaleByNumber(this.number)
+        this.boxModel.setLocalScale(scale, scale, scale)
         this.addChild(this.boxModel);
+
+        // console.log(this.getLocalPosition());
+
+
+
+        AssetsLoader.createCanvasFont("Arial", 106, "bold");
+        this.textEntity = new Entity();
+        this.textEntity.addComponent("element", {
+            type: "text",
+            text: Helper.getStringByNumber(this.number),
+            fontAsset: AssetsLoader.getAssetByKey("CanvasFont"),
+            fontSize: 32,
+            pivot: new pc.Vec2(0.5, 0.5), // Đặt pivot ở vị trí trung tâm của Text Element
+            width: 200, // Điều chỉnh kích thước theo nhu cầu của bạn
+            height: 50,
+            anchor: new pc.Vec4(0.5, 0.5, 0.5, 0.5) // Đặt anchor ở vị trí trung tâm của Text Element
+        });
+        // Gắn Text Element vào Entity
+        this.textEntity.setLocalPosition(0, 2, -0.02); // Đặt vị trí của Text Element trong hình hộp
+        this.textEntity.setLocalEulerAngles(-90, -90, 0)
+        this.textEntity.setLocalScale(0.023, 0.023, 0.023);
+        this.boxModel.addChild(this.textEntity);
+    }
+
+    update(vec3) {
+        this.translate(vec3.x, vec3.y, vec3.z)
+        if (this.nextBox) {
+            this.nextBox.update(this.lastTrans);
+        }
+        this.lastTrans = vec3
+
     }
 }

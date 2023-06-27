@@ -1,10 +1,11 @@
-import { Application, ElementInput, Keyboard, Mouse, TouchDevice, StandardMaterial, Color, RESOLUTION_AUTO, FILLMODE_FILL_WINDOW } from "playcanvas";
-import { Background } from "./Object/Background";
+import { Application, ElementInput, Keyboard, Mouse, TouchDevice, StandardMaterial, Color, RESOLUTION_AUTO, FILLMODE_FILL_WINDOW, Vec3 } from "playcanvas";
+
 import { AssetsLoader } from "./assets/AssetsLoader";
 import { loadObitCameraPlugin } from "../src/orbit-camera";
-import { Camera } from "./Object/Camera";
 import * as pc from "playcanvas"
-import { Box } from "./Object/Box";
+
+
+import { SceneGame } from "./Scene/SceneGame";
 
 export class Game {
     static init() {
@@ -25,50 +26,41 @@ export class Game {
     }
 
     static load() {
+        this.currentScene = new SceneGame();
+        this.app.root.addChild(this.currentScene);
 
-        // camera
-        this.camera = new Camera("camera");
-        this.app.root.addChild(this.camera)
+        this.app.on("update", deltaTime => {
+            // // Di chuyển hộp theo trục x
+            // var speed = 1; // Tốc độ di chuyển
+            // this.currentScene.boxHead.update(new Vec3(1 * deltaTime, 0, 0));
+            this.currentScene.update(deltaTime)
+        });
+        this.startPos = new pc.Vec2();
 
-        // create directional light entity
-        this.light = new pc.Entity("light");
-        this.light.addComponent("light");
-        this.app.root.addChild(this.light);
-        this.light.setLocalEulerAngles(45, 45, 90);
-
-        // background
-        this.app.root.addChild(new Background())
-
-        // Tạo đối tượng hộp
-        this.box = new Box("box", 2);
-        this.app.root.addChild(this.box);
-
-        // this.time = 1
-        // this.iii = 1
-        // this.app.on("update", (deltaTime) => {
-        //     // Di chuyển hộp theo trục x
-        //     //console.log(this.time)
-        //     this.time -= deltaTime
-        //     if (this.time <= 0) {
-        //         this.iii++
-        //         this.time = 1
-        //         this.material.diffuse = Helper.getColorByNumber(this.iii);
-        //         var scale = Helper.getScaleByNumber(this.iii)
-        //         this.box1.setLocalScale(scale, scale, scale)
-        //         this.material.update()
-        //     }
-        //     var speed = 1; // Tốc độ di chuyển
-        //     this.box.translate(speed * deltaTime, 0, 0);
-        // });
-
-        // this.app.on("update", deltaTime => {
-        //     // Di chuyển hộp theo trục x
-        //     var speed = 1; // Tốc độ di chuyển
-        //     this.box1.translate(speed * deltaTime, 0, 0);
-        // });
-
-
+        // Attach mouse events to the canvas element
+        this.app.mouse.on(pc.EVENT_MOUSEDOWN, this.onMouseDown, this);
+        this.app.mouse.on(pc.EVENT_MOUSEUP, this.onMouseUp, this);
+        this.app.mouse.on(pc.EVENT_MOUSEMOVE, this.onMouseMove, this);
     }
+    static onMouseDown(event) {
+        if (event.button === pc.MOUSEBUTTON_LEFT) {
+
+            this.currentScene.onMouseDown(event)
+        }
+    }
+
+    // static onMouseUp(event) {
+    //     if (event.button === pc.MOUSEBUTTON_LEFT) {
+    //         // Calculate the swipe direction
+    //         this.currentScene.onMouseUp(event)
+    //     }
+    // }
+
+    // static onMouseMove(event) {
+    //     if (event.buttons[pc.MOUSEBUTTON_LEFT]) { // Kiểm tra xem chuột trái có đang được nhấn hay không
+    //         this.currentScene.onMouseMove(event);
+    //     }
+    // }
 }
 
 window.onload = function () {

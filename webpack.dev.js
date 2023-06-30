@@ -41,7 +41,7 @@ module.exports = {
       pc: "playcanvas",
     }),
     new HtmlWebpackPlugin({
-      filename: "index.html",
+      filename: "index.ejs",
       template: "./src/index.ejs",
       inlineSource: ".(js|css)$",
     }),

@@ -5,7 +5,7 @@ import { AssetsLoader } from "../assets/AssetsLoader";
 import { Helper } from "../Helper/Helper";
 
 export class Cube extends Entity {
-  constructor(number = 2) {
+  constructor(number = 64) {
     super("cube");
     this.number = number;
 

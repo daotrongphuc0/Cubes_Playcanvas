@@ -19,6 +19,7 @@ export class CubeStackManager extends Entity {
     this.spawner = this.addScript(Spawner, {
       class: Cube,
       poolSize: 10,
+      args: [8],
     });
   }
 

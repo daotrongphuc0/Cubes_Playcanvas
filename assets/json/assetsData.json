@@ -1,0 +1,27 @@
+[
+    {
+        "key": "spr_item_1",
+        "url": "assets/images/itemspeed.png",
+        "type": "texture"
+    },
+    {
+        "key": "tspr_item_2",
+        "url": "assets/images/khien.png",
+        "type": "texture"
+    },
+    {
+        "key": "spr_item_3",
+        "url": "assets/images/x2.png",
+        "type": "texture"
+    },
+    {
+        "key": "dotmap",
+        "url": "assets/images/dotmap.jpg",
+        "type": "texture"
+    },
+    {
+        "key": "box",
+        "url": "assets/model/cube.glb",
+        "type": "model"
+    }
+]

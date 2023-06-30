@@ -22,6 +22,7 @@ export class AssetsLoader {
             } else {
                 console.log("loaded")
                 Game.load()
+                Game.create()
             }
         });
     }

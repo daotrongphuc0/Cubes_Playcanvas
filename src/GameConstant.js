@@ -9,13 +9,14 @@ export const GameConstant = Object.freeze({
     PLATFORM_ANDROID: "android",
     PLATFORM_IOS: "ios",
 
-    SCENE_SELECT: "SelectScene",
-    SCENE_MAP_EDITOR: "MapEditorScene",
+    SCENE_HOME: "SelectScene",
     SCENE_PLAY: "PlayScene",
+    SCENE_TEST: "TestScene",
 
-    SCREEN_SELECT_CAR: "SelectCarScreen",
-    SCREEN_MAP_EDITOR: "MapEditorScreen",
+    SCREEN_HOME: "SelectCarScreen",
     SCREEN_PLAY: "PlayScreen",
+
+    PLAYER_SPEED: 1,
 
     DEFAULT_SCALE_BOX_MIN: 0.5,
     DEFAULT_SCALE_SIZE_INCREASE: 0.1,

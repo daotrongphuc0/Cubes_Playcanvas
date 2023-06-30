@@ -1,11 +1,14 @@
 import { Application, ElementInput, Keyboard, Mouse, TouchDevice, StandardMaterial, Color, RESOLUTION_AUTO, FILLMODE_FILL_WINDOW, Vec3 } from "playcanvas";
-
 import { AssetsLoader } from "./assets/AssetsLoader";
 import { loadObitCameraPlugin } from "../src/orbit-camera";
 import * as pc from "playcanvas"
-
-
-import { SceneGame } from "./Scene/SceneGame";
+import { ScenePlay } from "./Scene/ScenePlay";
+import { SceneManager } from "./Scene/SceneManager";
+import { InputManager } from "./systems/input/inputManager"
+import { Time } from "./systems/time/time"
+import { Tween } from "./systems/tween/tween"
+import { GameConstant } from "./GameConstant";
+import { TestScene } from "./Scene/testScene";
 
 export class Game {
     static init() {
@@ -26,43 +29,51 @@ export class Game {
     }
 
     static load() {
-        this.currentScene = new SceneGame();
-        this.app.root.addChild(this.currentScene);
-
-        this.app.on("update", deltaTime => {
-            // // Di chuyển hộp theo trục x
-            // var speed = 1; // Tốc độ di chuyển
-            // this.currentScene.boxHead.update(new Vec3(1 * deltaTime, 0, 0));
-            this.currentScene.update(deltaTime)
-        });
-        this.startPos = new pc.Vec2();
-
-        // Attach mouse events to the canvas element
-        this.app.mouse.on(pc.EVENT_MOUSEDOWN, this.onMouseDown, this);
-        this.app.mouse.on(pc.EVENT_MOUSEUP, this.onMouseUp, this);
-        this.app.mouse.on(pc.EVENT_MOUSEMOVE, this.onMouseMove, this);
+        InputManager.init(this.app);
+        Time.init(this.app);
+        Tween.init(this.app);
+        this.app.start();
+        this.app.on("update", this.update, this);
     }
-    static onMouseDown(event) {
-        if (event.button === pc.MOUSEBUTTON_LEFT) {
 
-            this.currentScene.onMouseDown(event)
+    static create() {
+        this.gameCreated = true;
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.app.graphicsDevice.maxPixelRatio = window.devicePixelRatio;
+        this.app.resizeCanvas(this.width, this.height);
+        SceneManager.init([
+            // new ScenePlay(),
+            new TestScene(),
+        ]);
+        SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_TEST));
+        console.log(this.app.root);
+    }
+
+    static update(dt) {
+        SceneManager.update(Time.dt);
+    }
+
+    static resize(screenSize) {
+        if (this.gameCreated) {
+            this.width = screenSize.width;
+            this.height = screenSize.height;
+            this.app.graphicsDevice.maxPixelRatio = window.devicePixelRatio;
+            this.app.resizeCanvas(this.width, this.height);
+            SceneManager.resize();
+            this.app.fire("resize");
         }
     }
 
-    // static onMouseUp(event) {
-    //     if (event.button === pc.MOUSEBUTTON_LEFT) {
-    //         // Calculate the swipe direction
-    //         this.currentScene.onMouseUp(event)
-    //     }
-    // }
-
-    // static onMouseMove(event) {
-    //     if (event.buttons[pc.MOUSEBUTTON_LEFT]) { // Kiểm tra xem chuột trái có đang được nhấn hay không
-    //         this.currentScene.onMouseMove(event);
-    //     }
-    // }
 }
+
+//  chặn dùng chuột phải
+window.addEventListener("contextmenu", (e) => e.preventDefault());
 
 window.onload = function () {
     Game.init();
 };
+
+window.addEventListener("resize", (event) => {
+    Game.resize({ width: window.innerWidth, height: window.innerHeight })
+});

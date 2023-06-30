@@ -15,6 +15,11 @@
         "type": "texture"
     },
     {
+        "key": "dotmap",
+        "url": "assets/images/dotmap.jpg",
+        "type": "texture"
+    },
+    {
         "key": "box",
         "url": "assets/model/cube.glb",
         "type": "model"

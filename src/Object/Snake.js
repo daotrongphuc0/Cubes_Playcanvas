@@ -1,18 +1,14 @@
-import { Entity, Vec3, StandardMaterial } from "playcanvas";
-import { Snake } from "./Snake";
-import { Helper } from "../Helper/Helper";
+import { Entity, StandardMaterial, Color, Vec3 } from "playcanvas";
 import { AssetsLoader } from "../assets/AssetsLoader";
-import { Queue } from "../Helper/Queue";
+import { Helper } from "../Helper/Helper";
 
-
-export class Box extends Entity {
+export class Snake extends Entity {
     constructor(name = null, number = 2) {
         super(name);
         this.number = number;
         this.nextBox = null;
+        this.lastTrans = new Vec3(0, 0, 0)
         this.speed = 2;
-        this.run = true
-        this.queue = new Queue()
 
 
         // create material
@@ -29,7 +25,6 @@ export class Box extends Entity {
         var scale = Helper.getScaleByNumber(this.number)
         this.boxModel.setLocalScale(scale, scale, scale)
         this.addChild(this.boxModel);
-
 
         // text number
         AssetsLoader.createCanvasFont("Arial", 106, "bold");
@@ -49,41 +44,18 @@ export class Box extends Entity {
         this.textEntity.setLocalEulerAngles(-90, -90, 0)
         this.textEntity.setLocalScale(0.023, 0.023, 0.023);
         this.boxModel.addChild(this.textEntity);
-
-        this.start = this.getLocalPosition() // Điểm đầu (0, 0, 0)
-        this.end = this.getLocalPosition() // Điểm cuối (10, 0, 10)
-        this.duration = 0
-        this.elapsed = 0;
     }
 
-    update(dt) {
-        if (this.run) {
-            this.elapsed += dt; // Cộng thêm thời gian trôi qua
-            var t = Math.min(this.elapsed / this.duration, 1);
-            var newPosition = new pc.Vec3();
-            newPosition.lerp(this.start, this.end, this.speed * dt);
-            this.setPosition(newPosition);
-
-            // Kiểm tra nếu đối tượng đã đạt được điểm cuối
-            if (t === 1) {
-                this.start = this.getLocalPosition()
-                this.end = this.queue.dequeue();
-                this.duration = Helper.getDistance3D(this.start, this.end) / this.speed
-                // this.duration *= 10
-                this.elapsed = 0;
-                this.setLocalEulerAngles(0, Helper.toAngleDegree(Helper.getAngle(
-                    this.start.z,
-                    this.start.x,
-                    this.end.z, this.end.x) - 90), 0)
-            }
+    update(angle, deltaTime) {
+        if (this.nextBox) {
+            this.nextBox.update(deltaTime)
+            this.nextBox.queue.enqueue(this.getLocalPosition())
         }
+        this.setLocalEulerAngles(0, Helper.toAngleDegree(angle - 90), 0)
+        this.translate(this.speed * Math.sin(angle) * deltaTime, 0, this.speed * Math.cos(angle) * deltaTime)
+
+
+        // console.log(this.getLocalPosition() + "------");
+
     }
-
-    // update(position, deltaTime) {
-    //     this.angle = Helper.getAngle(this.getLocalPosition().z, this.getLocalPosition().x,
-    //         position.z, position.x);
-    //     this.setLocalEulerAngles(0, Helper.toAngleDegree(this.angle - 90), 0)
-    //     this.translate(this.speed * Math.sin(this.angle) * deltaTime, 0, this.speed * Math.cos(this.angle) * deltaTime)
-    // }
-
 }

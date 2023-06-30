@@ -1,7 +1,7 @@
 {
   "name": "pixijs-example",
   "version": "1.0.0",
-  "description": "This is the basic setup for the project running with PixiJS",
+  "description": "This is the basic setup for the project running with Playcanvas",
   "main": "index.js",
   "scripts": {
     "start": "webpack serve --env env=dev --open",
@@ -24,6 +24,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "@tweenjs/tween.js": "github:tweenjs/tween.js",
     "clean-webpack-plugin": "^4.0.0",
     "esbuild-loader": "^2.20.0",
     "pixi.js": "^7.0.4",

@@ -18,7 +18,5 @@ export class Background extends pc.Entity {
         this.setLocalScale(50, 0, 50)
         this.setLocalPosition(0, 0, 0)
         this.setLocalEulerAngles(0, 0, 0)
-
-
     }
 }

@@ -43,11 +43,11 @@ export class Game {
         this.app.graphicsDevice.maxPixelRatio = window.devicePixelRatio;
         this.app.resizeCanvas(this.width, this.height);
         SceneManager.init([
-            // new ScenePlay(),
+            new ScenePlay(),
             new TestScene(),
         ]);
         SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_TEST));
-        console.log(this.app.root);
+
     }
 
     static update(dt) {

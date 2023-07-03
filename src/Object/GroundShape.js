@@ -21,7 +21,7 @@ export class GroundShape extends Entity {
         this.material.diffuseMap = AssetsLoader.getAssetByKey("dotmap").resource
         this.material.diffuseTint = true
         this.material.tint = new pc.Color(0.5, 0.5)
-        this.material.diffuseDetailMapTiling = new Vec2(100, 100)
+        this.material.diffuseMapTiling = new Vec2(50, 50);
         this.material.update();
         this.modelComponent.model.meshInstances[0].material = this.material
     }

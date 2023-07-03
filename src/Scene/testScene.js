@@ -1,4 +1,4 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL, log } from "playcanvas";
+import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3, log } from "playcanvas";
 import { GameConstant } from "../GameConstant";
 import { Scene } from "./Scene";
 import { InputHandler, InputHandlerEvent } from "../script/inputHandler";
@@ -9,24 +9,29 @@ import { Tween } from "../systems/tween/tween";
 import { Camera } from "../Object/Camera";
 import { GroundShape } from "../Object/GroundShape";
 import { Helper } from "../Helper/Helper";
+import { Time } from "../systems/time/time";
+import { Box } from "../Object/Box";
 
 
 export class TestScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_TEST);
-
+    Time.reset_timeGame()
   }
 
   create() {
     super.create();
     this._initialize();
-
-    // create directional light entity
+    // light
     this.light = new pc.Entity("light");
     this.light.addComponent("light");
     this.addChild(this.light);
     this.light.setLocalEulerAngles(-43, 113, -16);
     this.light.setPosition(-7.42, 13, 1.23)
+  }
+
+  update(dt) {
+    this.player.update(dt)
   }
 
   _initialize() {
@@ -37,6 +42,9 @@ export class TestScene extends Scene {
     this._initPlayer();
     this.ray = new pc.Ray();
     this.hitPosition = new pc.Vec3();
+    this.touchedDown = false;
+    this.startPos = new Vec3()
+    this.time_game = 0
   }
 
   _initInputHandler() {
@@ -49,21 +57,12 @@ export class TestScene extends Scene {
   }
 
   _initMap() {
-    // this.map = new Entity();
-    // this.map.addComponent("model", {
-    //   type: "plane",
-    // });
-    // this.map.setLocalEulerAngles(0, 0, 0);
-    // this.map.setLocalScale(10, 10, 10);
-    // this.addChild(this.map);
-
     this.groundShape = new GroundShape()
     this.addChild(this.groundShape);
-
   }
 
   _initPlayer() {
-    this.player = new Player();
+    this.player = new Player(4096, this);
     this.addChild(this.player);
     this.player.levelUp();
     this.cubeStack = new CubeStackManager(this.player, 0.5);
@@ -73,54 +72,38 @@ export class TestScene extends Scene {
       onPositionChanged: this.cubeStack.enqueuePosition.bind(this.cubeStack),
       delta: 0.05,
     });
-
-
-    Tween.createCountTween({
-      duration: 3,
-      loop: true,
-      onRepeat: () => {
-
-        if (this.cubeStack.cubes.length < 3) {
-          this.cubeStack.spawnCubes(1);
-        }
-        else {
-          this.loop = false
-        }
-      },
-    }).start();
   }
 
-  // _onPointerDown(e) {
-  //   this.player.playerMove.onPointerDown(e);
-  //   this.cubeStack.startMove();
-  // }
+  _onPointerDown(event) {
+    this.touchedDown = true;
+    if (event.touches && event.touches[0]) {
+      this.startPos = this.doRayCast(event.touches[0]);
+    }
+    else {
+      this.startPos = this.doRayCast(event);
+    }
+  }
 
-  // _onPointerMove(e) {
-  //   this.player.playerMove.onPointerMove(e, this.player.getLocalPosition());
-  // }
+  _onPointerMove(event) {
+    if (!this.touchedDown) {
+      return;
+    }
 
-  // _onPointerUp(e) {
-  //   this.player.playerMove.onPointerUp(e);
-  //   this.cubeStack.stopMove();
-  // }
+    if (event.touches && event.touches[0]) {
+      this.player.set_direction_vector(Helper.getVectorAngle(this.startPos, this.doRayCast(event.touches[0])))
+    }
+    else {
+      this.player.set_direction_vector(Helper.getVectorAngle(this.startPos, this.doRayCast(event)))
+    }
+  }
+
+  _onPointerUp(e) {
+    this.touchedDown = false
+  }
 
   _initCamera() {
-    // this.mainCamera = new Entity();
-    // this.addChild(this.mainCamera);
-    // this.mainCamera.addComponent("camera", {
-    //   clearColor: new Color(0.5, 0.6, 0.9),
-    //   farClip: 1000,
-    //   fov: 60,
-    //   nearClip: 0.1,
-    // });
-    // this.mainCamera.setLocalPosition(0, 10, 10);
-    // this.mainCamera.setLocalEulerAngles(-40, 0, 0);
-
-    // camera
     this.camera = new Camera("camera");
     this.addChild(this.camera)
-
-
   }
 
   _initLight() {
@@ -141,10 +124,6 @@ export class TestScene extends Scene {
     this.directionalLight.setLocalEulerAngles(45, 135, 0);
   }
 
-  _onPointerMove(event) {
-    this.doRayCast(event);
-  }
-
   doRayCast(screenPosition) {
     var ray = this.ray;
     var hitPosition = this.hitPosition;
@@ -155,7 +134,8 @@ export class TestScene extends Scene {
 
     var result = this.groundShape.groundShape.intersectsRay(ray, hitPosition);
     if (result) {
-      this.player.playerMove.setVector(Helper.getVectorAngle(this.player.getLocalPosition(), hitPosition))
+      return new Vec3(hitPosition.x, hitPosition.y, hitPosition.z);
     }
+    return null;
   }
 }

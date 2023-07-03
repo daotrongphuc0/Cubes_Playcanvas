@@ -8,18 +8,17 @@ import { GroundShape } from "../Object/GroundShape";
 import { Box } from "../Object/Box";
 import { Queue } from "../Helper/Queue";
 import { Scene } from "./Scene";
+import { GameConstant } from "../GameConstant";
 
 export class ScenePlay extends Scene {
     constructor() {
-        super()
+        super(GameConstant.SCENE_PLAY)
         this.angle = -Math.PI / 2
 
         this.hitPosition = new pc.Vec3();
         this.ray = new pc.Ray();
         this.speed = 1;
-        this.direction = new pc.Vec3();
-        this.distanceToTravel = 0;
-        this.targetPosition = new pc.Vec3();
+
 
         // camera
         this.camera = new Camera("camera");
@@ -42,19 +41,9 @@ export class ScenePlay extends Scene {
         this.snake.lastPosition = new pc.Vec3(0, 0, 0)
 
 
-        // Tạo đối tượng hộp
-        this.box = new Box();
-        this.addChild(this.box);
-        this.box.setLocalPosition((Helper.getScaleByNumber(this.box.number) + 4 + Helper.getScaleByNumber(this.box.number)), 0, 0)
-        this.snake.nextBox = this.box
-        this.box.queue.enqueue(this.snake.getLocalPosition())
-
-
-
     }
 
     update(deltaTime) {
-        // this.boxHead.update(this.angle, deltaTime);
         this.snake.update(this.angle, deltaTime)
     }
 

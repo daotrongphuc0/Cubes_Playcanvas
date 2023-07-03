@@ -16,7 +16,7 @@ export const GameConstant = Object.freeze({
     SCREEN_HOME: "SelectCarScreen",
     SCREEN_PLAY: "PlayScreen",
 
-    PLAYER_SPEED: 1,
+    PLAYER_SPEED: 2,
 
     DEFAULT_SCALE_BOX_MIN: 0.5,
     DEFAULT_SCALE_SIZE_INCREASE: 0.1,

@@ -39,7 +39,7 @@ export class Helper {
             return `${Math.floor(num / 1000000)}M`;
         }
         if (num >= 10000) {
-            return `${Math.floor(num / 10000)}K`;
+            return `${Math.floor(num / 1000)}K`;
         }
         return num;
     }

@@ -48,7 +48,7 @@ export const MoveWithPath = Script.createScript({
 
   findNextTarget() {
     let index = -1;
-    let posQueue = CubeStackManager.positionQueue;
+    let posQueue = this.entity.manager.positionQueue;
     for (let i = 0; i < posQueue.length; i++) {
       if (posQueue[i] === this.targetNode) {
         index = i;
@@ -67,7 +67,7 @@ export const MoveWithPath = Script.createScript({
 
   reset(delayTime) {
     this.delayTime = delayTime;
-    let posQueue = CubeStackManager.positionQueue;
+    let posQueue = this.entity.manager.positionQueue;
     for (let i = 0; i < posQueue.length; i++) {
       if (posQueue[i].time + this.delayTime > Time.current) {
         this.targetNode = posQueue[i];

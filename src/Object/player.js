@@ -5,16 +5,16 @@ import { GameConstant } from "../GameConstant";
 import { Helper } from "../Helper/Helper";
 
 export class Player extends Cube {
-  constructor(number = 2) {
-    super(number);
+  constructor(name, num) {
+    super(num);
     this.moved = false;
     this.startPos = new Vec3();
-    this.number = number
+    this.name = name
 
     this.playerMove = this.addScript(PlayerMovement, {
       speed: GameConstant.PLAYER_SPEED,
     });
-    this.setLocalScale(100, 100, 100)
+
 
   }
 

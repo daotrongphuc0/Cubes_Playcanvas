@@ -18,6 +18,8 @@ export class Cube extends Entity {
       speed: GameConstant.PLAYER_SPEED,
     });
 
+    this.manager = null
+
     this.activeMove(false);
     this.updateScale();
     this.updateText();
@@ -81,5 +83,8 @@ export class Cube extends Entity {
     this.model.meshInstances[0].material = this.material
   }
 
+  destroy() {
+    super.destroy()
+  }
 
 }

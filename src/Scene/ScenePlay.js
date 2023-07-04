@@ -34,12 +34,6 @@ export class ScenePlay extends Scene {
         this.groundShape = new GroundShape()
         this.addChild(this.groundShape);
 
-        // Tạo đối tượng hộp
-        this.snake = new Snake("box", 16384);
-        this.addChild(this.snake);
-        this.snake.setLocalPosition(0, 0, 0)
-        this.snake.lastPosition = new pc.Vec3(0, 0, 0)
-
 
     }
 

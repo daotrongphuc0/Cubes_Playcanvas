@@ -11,11 +11,12 @@ export const CubeStackManagerEvent = Object.freeze({
 
 export class CubeStackManager extends Entity {
 
-  static positionQueue = [];
+  // static positionQueue = [];
 
   constructor(player, stackSpace = 1) {
     super("cubeStackManager");
     this.player = player;
+    this.positionQueue = [];
     this.cubes = [];
     this.stackSpace = stackSpace;
     this.spawner = this.addScript(Spawner, {
@@ -26,7 +27,7 @@ export class CubeStackManager extends Entity {
   }
 
   enqueuePosition(position) {
-    CubeStackManager.positionQueue.push({
+    this.positionQueue.push({
       position,
       time: Time.current,
     });
@@ -56,11 +57,15 @@ export class CubeStackManager extends Entity {
     let spawnPos = cubeAhead.getPosition();
     spawnPos.z += this.stackSpace;
     let cube = this.spawner.spawnTo(spawnPos, this);
+
+
+
+    cube.manager = this;
+
     this.cubes.push(cube);
     cube.setEulerAngles(cubeAhead.getEulerAngles());
-    let delayTime = isFirstCube ? Helper.getScaleByNumber(cube.number) - 0.3 : cubeAhead.mover.delayTime + Helper.getScaleByNumber(cube.number) + 0.005;
+    let delayTime = isFirstCube ? (Helper.getScaleByNumber(cube.number) + Helper.getScaleByNumber(this.player.number)) / 4 - 0.1 : cubeAhead.mover.delayTime + Helper.getScaleByNumber(cube.number) + 0.005;
     // let delayTime = Helper.getScaleByNumber(cube.number) + 0.1
-    console.log(Helper.getScaleByNumber(cube.number));
     delayTime = Math.max(delayTime, 0.3);
     cube.reset(delayTime);
     return cube;

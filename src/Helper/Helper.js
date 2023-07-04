@@ -55,6 +55,10 @@ export class Helper {
         return vec2.clone().sub(vec1).normalize();;
     }
 
+    static getVector(x1, y1, x2, y2) {
+        return new pc.Vec3(y1, 0, x2).sub(new pc.Vec3(y2, 0, x1)).normalize();;
+    }
+
     static getDistance(x1, y1, x2, y2) {
         return (Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y1 - y2, 2)))
     }

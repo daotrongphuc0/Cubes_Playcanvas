@@ -1,4 +1,4 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec3 } from "playcanvas";
+import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec2, Vec3 } from "playcanvas";
 import { InputHandler, InputHandlerEvent } from "../scripts/inputHandler";
 import { Player } from "../Object/player";
 import { DetectPositionChanged } from "../scripts/detectPositionChanged";
@@ -9,10 +9,14 @@ import { Scene } from "./Scene";
 import { Camera } from "../Object/Camera";
 import { GroundShape } from "../Object/GroundShape";
 import { Helper } from "../Helper/Helper";
+import { Cube } from "../Object/cube";
+import { Snake } from "../Object/Snake";
 
 export class TestScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_TEST);
+    this.snakes = []
+    this.box = []
   }
 
   create() {
@@ -30,7 +34,7 @@ export class TestScene extends Scene {
     this.ray = new pc.Ray();
     this.hitPosition = new pc.Vec3();
     this.touchedDown = false;
-    this.startPos = new Vec3()
+    this.downPos = new Vec2()
   }
 
   _initInputHandler() {
@@ -49,33 +53,23 @@ export class TestScene extends Scene {
   }
 
   _initPlayer() {
-    this.player = new Player();
-    this.addChild(this.player);
-    this.player.setLocalScale(1, 1, 1);
-    this.cubeStack = new CubeStackManager(this.player, 0.5);
-    this.addChild(this.cubeStack);
 
-    this.detectPositionChange = this.player.addScript(DetectPositionChanged, {
-      onPositionChanged: this.cubeStack.enqueuePosition.bind(this.cubeStack),
-      delta: 0.05,
-    });
+    this.create_player("aaaa", 32, new Vec3(0, 0, 0))
+    this.create_snake("bbbb", 8, new Vec3(0, 0, 0))
 
-    Tween.createCountTween({
-      duration: 2,
-      loop: true,
-      onRepeat: () => {
-        this.cubeStack.spawnCube();
-      },
-    }).start();
+    this.cube = new Cube(200);
+    this.addChild(this.cube);
   }
 
   _onPointerDown(event) {
     this.touchedDown = true;
     if (event.touches && event.touches[0]) {
-      this.startPos = this.doRayCast(event.touches[0]);
+      this.downPos.x = event.touches[0].x
+      this.downPos.y = event.touches[0].y
     }
     else {
-      this.startPos = this.doRayCast(event);
+      this.downPos.x = event.x
+      this.downPos.y = event.y
     }
   }
 
@@ -84,10 +78,12 @@ export class TestScene extends Scene {
       return;
     }
     if (event.touches && event.touches[0]) {
-      this.player.playerMove.setVector(Helper.getVectorAngle(this.startPos, this.doRayCast(event.touches[0])))
+      // this.player.playerMove.setVector(Helper.getVectorAngle(this.downPos, this.doRayCast(event.touches[0])))
+      this.player.playerMove.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.touches[0].x, event.touches[0].y))
     }
     else {
-      this.player.playerMove.setVector(Helper.getVectorAngle(this.startPos, this.doRayCast(event)))
+      // this.player.playerMove.setVector(Helper.getVectorAngle(this.downPos, this.doRayCast(event)))
+      this.player.playerMove.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
     }
   }
 
@@ -99,7 +95,6 @@ export class TestScene extends Scene {
   _initCamera() {
     this.camera = new Camera();
     this.addChild(this.camera);
-
   }
 
   _initLight() {
@@ -127,18 +122,44 @@ export class TestScene extends Scene {
     this.light.setPosition(-7.42, 13, 1.23)
   }
 
-  doRayCast(screenPosition) {
-    var ray = this.ray;
-    var hitPosition = this.hitPosition;
+  create_snake(name = "", number, position = new Vec3) {
+    this.snake = new Snake(name, number);
+    this.addChild(this.snake);
+    this.snake.setLocalPosition(position)
+    this.cubeStack1 = new CubeStackManager(this.snake, 0.5);
+    this.addChild(this.cubeStack1);
 
-    this.camera.camera.screenToWorld(screenPosition.x, screenPosition.y, this.camera.camera.nearClip, this.ray.origin);
-    this.camera.camera.screenToWorld(screenPosition.x, screenPosition.y, this.camera.camera.farClip, this.ray.direction);
-    ray.direction.sub(this.ray.origin).normalize();
+    this.detectPositionChange1 = this.snake.addScript(DetectPositionChanged, {
+      onPositionChanged: this.cubeStack1.enqueuePosition.bind(this.cubeStack1),
+      delta: 0.05,
+    });
+    // Tween.createCountTween({
+    //   duration: 2,
+    //   loop: true,
+    //   onRepeat: () => {
+    //     this.cubeStack1.spawnCube();
+    //   },
+    // }).start();
+  }
 
-    var result = this.groundShape.groundShape.intersectsRay(ray, hitPosition);
-    if (result) {
-      return new Vec3(hitPosition.x, hitPosition.y, hitPosition.z);
-    }
-    return null;
+  create_player(name = "", number = 2, position = new Vec3) {
+    this.player = new Player(name, number);
+    this.player.setLocalPosition(position)
+    this.addChild(this.player);
+    this.cubeStack = new CubeStackManager(this.player, 0.5);
+    this.addChild(this.cubeStack);
+
+    this.detectPositionChange = this.player.addScript(DetectPositionChanged, {
+      onPositionChanged: this.cubeStack.enqueuePosition.bind(this.cubeStack),
+      delta: 0.05,
+    });
+
+    // Tween.createCountTween({
+    //   duration: 2,
+    //   loop: true,
+    //   onRepeat: () => {
+    //     this.cubeStack.spawnCube();
+    //   },
+    // }).start();
   }
 }

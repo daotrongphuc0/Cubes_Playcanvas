@@ -8,7 +8,7 @@ import { InputManager } from "./systems/input/inputManager"
 import { Time } from "./systems/time/time"
 import { Tween } from "./systems/tween/tween"
 import { GameConstant } from "./GameConstant";
-import { TestScene } from "./Scene/testScene";
+import { TestScene } from "./Scene/SceneLv1";
 
 export class Game {
     static init() {

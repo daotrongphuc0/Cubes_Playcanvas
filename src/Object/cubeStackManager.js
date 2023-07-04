@@ -1,7 +1,8 @@
 import { Entity, Vec3 } from "playcanvas";
-import { Spawner } from "../script/spawners/spawner";
+import { Spawner } from "../scripts/spawner";
 import { Cube } from "./cube";
 import { Time } from "../systems/time/time";
+import { Helper } from "../Helper/Helper";
 
 
 export const CubeStackManagerEvent = Object.freeze({
@@ -9,6 +10,7 @@ export const CubeStackManagerEvent = Object.freeze({
 });
 
 export class CubeStackManager extends Entity {
+
   static positionQueue = [];
 
   constructor(player, stackSpace = 1) {
@@ -19,7 +21,7 @@ export class CubeStackManager extends Entity {
     this.spawner = this.addScript(Spawner, {
       class: Cube,
       poolSize: 10,
-      args: [8],
+      args: [64]
     });
   }
 
@@ -42,12 +44,6 @@ export class CubeStackManager extends Entity {
     });
   }
 
-  spawnCubes(amount) {
-    for (let i = 0; i < amount; i++) {
-      this.spawnCube();
-    }
-  }
-
   spawnCube() {
     let cubeAhead;
     let isFirstCube = this.cubes.length === 0;
@@ -62,8 +58,10 @@ export class CubeStackManager extends Entity {
     let cube = this.spawner.spawnTo(spawnPos, this);
     this.cubes.push(cube);
     cube.setEulerAngles(cubeAhead.getEulerAngles());
-    let delayTime = isFirstCube ? 0.5 : cubeAhead.mover.delayTime + 1;
-    delayTime = Math.max(delayTime, 0.5);
+    let delayTime = isFirstCube ? Helper.getScaleByNumber(cube.number) - 0.3 : cubeAhead.mover.delayTime + Helper.getScaleByNumber(cube.number) + 0.005;
+    // let delayTime = Helper.getScaleByNumber(cube.number) + 0.1
+    console.log(Helper.getScaleByNumber(cube.number));
+    delayTime = Math.max(delayTime, 0.3);
     cube.reset(delayTime);
     return cube;
   }

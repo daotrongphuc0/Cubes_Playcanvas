@@ -1,5 +1,5 @@
 import { createScript, Entity } from "playcanvas";
-import { Util } from "../../../helpers/util";
+import { Util } from "../../Helper/util";
 import { ScriptConfig } from "./scriptConfig";
 
 export class Script {
@@ -36,7 +36,7 @@ export class Script {
  * @param {ScriptConfig} config
  * @param {*} attributes
  */
-Entity.prototype.addScript = function(config, attributes = {}) {
+Entity.prototype.addScript = function (config, attributes = {}) {
   if (!config._initialized) {
     Script._initScript(config);
   }
@@ -76,7 +76,7 @@ Entity.prototype.addScript = function(config, attributes = {}) {
  * @param {ScriptConfig} config
  * @returns {pc.ScriptType}
  */
-Entity.prototype.getScript = function(config) {
+Entity.prototype.getScript = function (config) {
   if (!this.script) {
     return null;
   }

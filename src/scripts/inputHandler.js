@@ -1,5 +1,5 @@
 import { InputManager, InputManagerEvent } from "../systems/input/inputManager";
-import { Script } from "./script";
+import { Script } from "../systems/script/script";
 
 export const InputHandler = Script.createScript({
   name: "inputHandler",

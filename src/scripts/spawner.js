@@ -1,4 +1,4 @@
-import { Script } from "../script";
+import { Script } from "../systems/script/script";
 import { SpawningEvent } from "./spawningEvent";
 
 export const Spawner = Script.createScript({

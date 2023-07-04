@@ -1,5 +1,5 @@
 import { Vec3 } from "playcanvas";
-import { Script } from "./script";
+import { Script } from "../systems/script/script";
 import { Time } from "../systems/time/time";
 import { CubeStackManager } from "../Object/cubeStackManager";
 

@@ -1,5 +1,5 @@
 import { Color, Entity, StandardMaterial } from "playcanvas";
-import { MoveWithPath } from "../script/moveWithPath";
+import { MoveWithPath } from "../scripts/moveWithPath";
 import { GameConstant } from "../GameConstant";
 import { AssetsLoader } from "../assets/AssetsLoader";
 import { Helper } from "../Helper/Helper";

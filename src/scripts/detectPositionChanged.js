@@ -1,5 +1,5 @@
 import { Vec3 } from "playcanvas";
-import { Script } from "../script/script";
+import { Script } from "../systems/script/script";
 
 export const DetectPositionChanged = Script.createScript({
   name: "detectPositionChanged",

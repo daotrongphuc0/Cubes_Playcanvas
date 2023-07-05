@@ -21,6 +21,8 @@ export const GameConstant = Object.freeze({
     DEFAULT_SCALE_BOX_MIN: 0.5,
     DEFAULT_SCALE_SIZE_INCREASE: 0.1,
     DEFAULT_SCALE_BOX_MAX: 1,
-    DEFAULT_COLOR_BOX: (0, 1, 0)
+    DEFAULT_COLOR_BOX: (0, 1, 0),
+
+    DEFAULT_LOCATION_CAMERA: new Vec3(-10, 25, 0),
 
 });

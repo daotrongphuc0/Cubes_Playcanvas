@@ -1,4 +1,6 @@
 import * as pc from "playcanvas";
+import { GameConstant } from "../GameConstant";
+import { FocusCamera } from "../scripts/focusCamera";
 
 
 export class Camera extends pc.Entity {
@@ -6,11 +8,12 @@ export class Camera extends pc.Entity {
         super(name);
         this.addComponent("camera", {
             clearColor: new pc.Color(0.5, 0.6, 0.9),
-
         });
 
+        this.focus = this.addScript(FocusCamera, {});
+
         this.setLocalScale(1, 1, 1)
-        this.setLocalPosition(-10, 25, 0)
+        this.setLocalPosition(GameConstant.DEFAULT_LOCATION_CAMERA)
         this.setLocalEulerAngles(0, -90, -65);
 
         // this.addComponent("script");

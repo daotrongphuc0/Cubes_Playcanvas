@@ -10,11 +10,11 @@ export class Player extends Cube {
     this.moved = false;
     this.startPos = new Vec3();
     this.name = name
-
     this.playerMove = this.addScript(PlayerMovement, {
       speed: GameConstant.PLAYER_SPEED,
     });
-
+    var scale = Helper.getScaleByNumber(num);
+    this.setLocalScale(scale, scale, scale)
 
   }
 

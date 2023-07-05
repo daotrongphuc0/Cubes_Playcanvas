@@ -16,6 +16,9 @@ export class Snake extends Cube {
             speed: GameConstant.PLAYER_SPEED,
         });
 
+        var scale = Helper.getScaleByNumber(num);
+        this.setLocalScale(scale, scale, scale)
+
     }
 
 }

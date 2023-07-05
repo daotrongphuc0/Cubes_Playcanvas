@@ -17,6 +17,7 @@ export class TestScene extends Scene {
     super(GameConstant.SCENE_TEST);
     this.snakes = []
     this.box = []
+    this.player = null
   }
 
   create() {
@@ -48,15 +49,12 @@ export class TestScene extends Scene {
 
   _initMap() {
     this.groundShape = new GroundShape();
-
     this.addChild(this.groundShape);
   }
 
   _initPlayer() {
-
     this.create_player("aaaa", 32, new Vec3(0, 0, 0))
     this.create_snake("bbbb", 8, new Vec3(0, 0, 0))
-
     this.cube = new Cube(200);
     this.addChild(this.cube);
   }
@@ -93,8 +91,8 @@ export class TestScene extends Scene {
 
 
   _initCamera() {
-    this.camera = new Camera();
-    this.addChild(this.camera);
+    this.camera1 = new Camera();
+    this.addChild(this.camera1);
   }
 
   _initLight() {
@@ -122,15 +120,16 @@ export class TestScene extends Scene {
     this.light.setPosition(-7.42, 13, 1.23)
   }
 
-  create_snake(name = "", number, position = new Vec3) {
-    this.snake = new Snake(name, number);
-    this.addChild(this.snake);
-    this.snake.setLocalPosition(position)
-    this.cubeStack1 = new CubeStackManager(this.snake, 0.5);
-    this.addChild(this.cubeStack1);
 
-    this.detectPositionChange1 = this.snake.addScript(DetectPositionChanged, {
-      onPositionChanged: this.cubeStack1.enqueuePosition.bind(this.cubeStack1),
+  create_snake(name = "", number, position = new Vec3) {
+    var snake = new Snake(name, number);
+    this.addChild(snake);
+    snake.setLocalPosition(position)
+    var cubeStack1 = new CubeStackManager(snake, 0.5);
+    this.addChild(cubeStack1);
+
+    var detectPositionChange1 = snake.addScript(DetectPositionChanged, {
+      onPositionChanged: cubeStack1.enqueuePosition.bind(cubeStack1),
       delta: 0.05,
     });
     // Tween.createCountTween({
@@ -140,19 +139,36 @@ export class TestScene extends Scene {
     //     this.cubeStack1.spawnCube();
     //   },
     // }).start();
+    this.snakes.push({
+      head: snake,
+      cubeManager: cubeStack1,
+      detectPosChance: detectPositionChange1,
+    })
+
+
   }
 
   create_player(name = "", number = 2, position = new Vec3) {
-    this.player = new Player(name, number);
-    this.player.setLocalPosition(position)
-    this.addChild(this.player);
-    this.cubeStack = new CubeStackManager(this.player, 0.5);
-    this.addChild(this.cubeStack);
+    if (!this.player) {
+      this.player = new Player(name, number);
+      this.player.setLocalPosition(position)
+      this.addChild(this.player);
+      this.cubeStack = new CubeStackManager(this.player, 0.5);
+      this.addChild(this.cubeStack);
 
-    this.detectPositionChange = this.player.addScript(DetectPositionChanged, {
-      onPositionChanged: this.cubeStack.enqueuePosition.bind(this.cubeStack),
-      delta: 0.05,
-    });
+      this.detectPositionChange = this.player.addScript(DetectPositionChanged, {
+        onPositionChanged: this.cubeStack.enqueuePosition.bind(this.cubeStack),
+        delta: 0.05,
+      });
+
+      this.snakes.push({
+        head: this.player,
+        cubeManager: this.cubeStack,
+        detectPosChance: this.detectPositionChange,
+      })
+
+      this.camera1.focus.objectFocus = this.player
+    }
 
     // Tween.createCountTween({
     //   duration: 2,

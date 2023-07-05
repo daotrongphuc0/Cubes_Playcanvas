@@ -1,12 +1,7 @@
-import { Entity, Vec3, PointAndClick } from "playcanvas";
 import { Camera } from "../Object/Camera";
 import * as pc from "playcanvas"
-import { Snake } from "../Object/Snake";
-import { Background } from "../Object/Background";
 import { Helper } from "../Helper/Helper";
 import { GroundShape } from "../Object/GroundShape";
-import { Box } from "../Object/Box";
-import { Queue } from "../Helper/Queue";
 import { Scene } from "./Scene";
 import { GameConstant } from "../GameConstant";
 

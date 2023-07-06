@@ -25,4 +25,8 @@ export const GameConstant = Object.freeze({
 
     DEFAULT_LOCATION_CAMERA: new Vec3(-10, 25, 0),
 
+    DEFAULT_HEIGHT_WALL: 4,
+
+    DEFAULT_COLOR_WALL: new Color(85 / 255, 85 / 255, 85 / 255),
+
 });

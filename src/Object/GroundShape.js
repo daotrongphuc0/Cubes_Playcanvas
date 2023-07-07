@@ -24,6 +24,7 @@ export class GroundShape extends Entity {
         this.material.diffuseMapTiling = new Vec2(40, 40);
         this.material.update();
         this.modelComponent.model.meshInstances[0].material = this.material
+
     }
 }
 

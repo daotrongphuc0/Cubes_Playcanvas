@@ -9,6 +9,8 @@ export class Cube extends Entity {
     super("cube");
     this.number = number;
 
+    this.type = 2
+
     this.material = new StandardMaterial();
     this.textEntity = new Entity();
 

@@ -1,4 +1,4 @@
-import { Vec3 } from "playcanvas";
+import { Vec3, Color } from "playcanvas";
 
 export const GameConstant = Object.freeze({
     GAME_WIDTH: 1280,
@@ -28,5 +28,10 @@ export const GameConstant = Object.freeze({
     DEFAULT_HEIGHT_WALL: 4,
 
     DEFAULT_COLOR_WALL: new Color(85 / 255, 85 / 255, 85 / 255),
+
+    SIZE_MODEL_BOX: 2,
+
+    HEIGHT_ITEM: 0.01,
+    SIZE_ITEM: 3,
 
 });

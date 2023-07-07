@@ -15,6 +15,16 @@
         "type": "texture"
     },
     {
+        "key": "bt_speed",
+        "url": "assets/images/btSpeed1.png",
+        "type": "texture"
+    },
+    {
+        "key": "bg_move",
+        "url": "assets/images/btSpeed.png",
+        "type": "texture"
+    },
+    {
         "key": "dotmap",
         "url": "assets/images/dot.png",
         "type": "texture"

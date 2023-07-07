@@ -1,7 +1,6 @@
-import { Application, ElementInput, Keyboard, Mouse, TouchDevice, StandardMaterial, Color, RESOLUTION_AUTO, FILLMODE_FILL_WINDOW, Vec3 } from "playcanvas";
+import { Application, ElementInput, Keyboard, Mouse, TouchDevice, WasmModule, RESOLUTION_AUTO, FILLMODE_FILL_WINDOW } from "playcanvas";
 import { AssetsLoader } from "./assets/AssetsLoader";
 import { loadObitCameraPlugin } from "../src/orbit-camera";
-import * as pc from "playcanvas"
 import { ScenePlay } from "./Scene/ScenePlay";
 import { SceneManager } from "./Scene/SceneManager";
 import { InputManager } from "./systems/input/inputManager"
@@ -9,7 +8,6 @@ import { Time } from "./systems/time/time"
 import { Tween } from "./systems/tween/tween"
 import { GameConstant } from "./GameConstant";
 import { TestScene } from "./Scene/SceneLv1";
-
 export class Game {
     static init() {
         const canvas = document.createElement("canvas");
@@ -23,12 +21,20 @@ export class Game {
         this.app.setCanvasFillMode(FILLMODE_FILL_WINDOW);
         this.app.setCanvasResolution(RESOLUTION_AUTO);
         this.app.graphicsDevice.maxPixelRatio = window.devicePixelRatio;
+        WasmModule.setConfig("Ammo", {
+            glueUrl: "assets/libs/ammo.wasm.js",
+            wasmUrl: "assets/libs/ammo.wasm.wasm",
+            fallbackUrl: "assets/libs/ammo.js",
+        });
         loadObitCameraPlugin();
-        AssetsLoader.loadAssets(this.app)
-        this.app.start();
+        WasmModule.getInstance("Ammo", () => {
+            AssetsLoader.loadAssets(this.app)
+        });
+        this.app.systems.rigidbody.gravity.set(0, -0, 0)
     }
 
     static load() {
+        this.app.start();
         InputManager.init(this.app);
         Time.init(this.app);
         Tween.init(this.app);

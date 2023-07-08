@@ -1,9 +1,9 @@
 import { Entity, Vec2, Vec4 } from "playcanvas";
-import { AssetsLoader } from "../assets/AssetsLoader";
-import { Button } from "../Object/ui/button";
+import { AssetsLoader } from "../../assets/AssetsLoader";
+import { Button } from "../ui/button";
 import * as pc from "playcanvas";
-import { Game } from "../game";
-import { UIScreen } from "../ui/UIScreen";
+import { Game } from "../../game";
+import { UIScreen } from "../UIScreen";
 
 export class ScreenPlay extends Entity {
   constructor(isMobile = true) {

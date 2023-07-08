@@ -55,6 +55,13 @@ export class Cube extends Entity {
     this.updateColor();
   }
 
+  updateChance(num) {
+    this.number = num;
+    this.updateScale();
+    this.updateText();
+    this.updateColor();
+  }
+
   destroy() {
     super.destroy()
   }

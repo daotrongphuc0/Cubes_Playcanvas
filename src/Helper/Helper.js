@@ -50,9 +50,12 @@ export class Helper {
         const angleInRadians = Math.atan2(deltaY, deltaX);
         return angleInRadians;
     }
+    static getAngleTwoVector(vec1, vec2) {
+        return Math.abs(Math.atan2(vec1.x, vec1.z) - Math.atan2(vec2.x, vec2.z))
+    }
 
     static getVectorAngle(vec1, vec2) {
-        return vec2.clone().sub(vec1).normalize();;
+        return vec2.clone().sub(vec1).normalize();
     }
 
     static getVector(x1, y1, x2, y2) {

@@ -10,7 +10,7 @@ export const SnakeMove = Script.createScript({
     },
 
     _tmpPos: new Vec3(),
-    vector: new Vec3(0, 0, 1),
+    vector: new Vec3(1, 0, 0),
 
     update() {
         var direction = this.vector

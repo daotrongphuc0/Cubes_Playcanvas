@@ -7,7 +7,7 @@ import { InputManager } from "./systems/input/inputManager"
 import { Time } from "./systems/time/time"
 import { Tween } from "./systems/tween/tween"
 import { GameConstant } from "./GameConstant";
-import { TestScene } from "./Scene/SceneLv1";
+import { SceneLv1 } from "./Scene/SceneLv1";
 export class Game {
     static init() {
         const canvas = document.createElement("canvas");
@@ -50,7 +50,7 @@ export class Game {
         this.app.resizeCanvas(this.width, this.height);
         SceneManager.init([
             new ScenePlay(),
-            new TestScene(),
+            new SceneLv1(),
         ]);
         SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_TEST));
 

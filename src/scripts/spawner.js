@@ -6,7 +6,7 @@ export const Spawner = Script.createScript({
 
   attributes: {
     class: {},
-    args: { default: [] },
+    args: { default: 2 },
     poolSize: { default: 0 },
     callback: { default: null },
   },
@@ -68,6 +68,11 @@ export const Spawner = Script.createScript({
   },
 
   createEntity() {
-    return new this.class(...this.args);
+    // console.log(this.args);
+    return new this.class(this.args);
   },
+
+  setArgs(num) {
+    this.args = [num]
+  }
 });

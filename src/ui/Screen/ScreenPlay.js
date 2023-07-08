@@ -68,7 +68,6 @@ export class ScreenPlay extends Entity {
   setMove(vector) {
     var distance = 45 * Math.sqrt(2)
     let angle = Math.atan2(vector.x, vector.z);
-    console.log("XXX");
     this.moveButton.setLocalPosition(-450 + distance * Math.cos(angle), -150 + distance * Math.sin(angle), 0);
   }
 }

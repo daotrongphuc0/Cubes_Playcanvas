@@ -21,6 +21,7 @@ export const PlayerMovement = Script.createScript({
   },
 
   update() {
+
     var direction = this.vector
     var xMovement = direction.x * this.speed * Time.dt;
     var zMovement = direction.z * this.speed * Time.dt;

@@ -34,4 +34,8 @@ export const SnakeMove = Script.createScript({
         this.vector = vec;
     },
 
+    getVector() {
+        return this.vector
+    }
+
 });

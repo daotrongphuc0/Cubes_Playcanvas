@@ -13,7 +13,7 @@ export const PlayerMovement = Script.createScript({
   startPos: new Vec3(),
   currPos: new Vec3(),
   _tmpPos: new Vec3(),
-  vector: new Vec3(0, 0, 1),
+  vector: new Vec3(1, 0, 0),
 
 
   onEnable() {
@@ -46,5 +46,9 @@ export const PlayerMovement = Script.createScript({
   setVector(vec) {
     this.vector = vec;
   },
+
+  getVector() {
+    return this.vector
+  }
 
 });

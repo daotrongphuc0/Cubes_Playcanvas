@@ -37,7 +37,7 @@ export const MoveWithPath = Script.createScript({
     let rot = this.entity.getRotation();
     let angle = Math.atan2(this.targetNode.position.x - this.entity.getPosition().x, this.targetNode.position.z - this.entity.getPosition().z);
     angle = angle * 180 / Math.PI;
-    this.entity.setEulerAngles(rot.x, angle, rot.z);
+    this.entity.setEulerAngles(rot.x, angle - 90, rot.z);
   },
 
   checkNeedUpdate() {

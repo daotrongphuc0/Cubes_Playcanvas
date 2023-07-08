@@ -7,10 +7,13 @@ import { Helper } from "../Helper/Helper";
 export class Player extends Cube {
   constructor(name, num) {
     super(num);
+
+    this.type = 3
+
     this.moved = false;
     this.startPos = new Vec3();
     this.name = name
-    this.playerMove = this.addScript(PlayerMovement, {
+    this.move = this.addScript(PlayerMovement, {
       speed: GameConstant.PLAYER_SPEED,
     });
     var scale = Helper.getScaleByNumber(num);

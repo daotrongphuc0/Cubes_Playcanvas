@@ -24,7 +24,7 @@ export class Cube extends Entity {
 
     this.activeMove(false);
     this.updateScale();
-    this.updateText();
+    this.initText();
     this.updateColor();
 
   }
@@ -66,7 +66,7 @@ export class Cube extends Entity {
     super.destroy()
   }
 
-  updateText() {
+  initText() {
     AssetsLoader.createCanvasFont("Arial", 106, "bold");
     this.textEntity.addComponent("element", {
       type: "text",
@@ -84,6 +84,10 @@ export class Cube extends Entity {
     this.textEntity.setLocalEulerAngles(-90, -90, 0)
     this.textEntity.setLocalScale(0.023, 0.023, 0.023);
     this.addChild(this.textEntity);
+  }
+
+  updateText() {
+    this.textEntity.element.text = Helper.getStringByNumber(this.number);
   }
 
   updateColor() {

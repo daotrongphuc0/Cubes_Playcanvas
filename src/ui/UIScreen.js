@@ -1,5 +1,5 @@
-import { GameConstant } from "../../gameConstant";
-import { Game } from "../../game";
+import { GameConstant } from "../GameConstant";
+import { Game } from "../game";
 import { Entity, SCALEMODE_BLEND, Vec2, Vec3 } from "playcanvas";
 export class UIScreen extends Entity {
     /**

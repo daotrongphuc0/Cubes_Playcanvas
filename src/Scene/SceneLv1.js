@@ -1,4 +1,4 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec2, Vec3 } from "playcanvas";
+import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec2, Vec3, Vec4 } from "playcanvas";
 import { InputHandler, InputHandlerEvent } from "../scripts/inputHandler";
 import { Player } from "../Object/player";
 import { DetectPositionChanged } from "../scripts/detectPositionChanged";
@@ -11,8 +11,14 @@ import { GroundShape } from "../Object/GroundShape";
 import { Helper } from "../Helper/Helper";
 import { Cube } from "../Object/cube";
 import { Snake } from "../Object/Snake";
+import { Wall } from "../Object/Wall";
+import { Background } from "../Object/Background";
+import { Item } from "../Object/Item";
+import { Button } from "../ui/ui/button";
+import { ScreenPlay } from "../ui/Screen/ScreenPlay";
+import { Collision } from "../Helper/Collision";
 
-export class TestScene extends Scene {
+export class SceneLv1 extends Scene {
   constructor() {
     super(GameConstant.SCENE_TEST);
     this.snakes = []
@@ -22,6 +28,7 @@ export class TestScene extends Scene {
 
   create() {
     super.create();
+
     this._initialize();
   }
 
@@ -36,6 +43,8 @@ export class TestScene extends Scene {
     this.hitPosition = new pc.Vec3();
     this.touchedDown = false;
     this.downPos = new Vec2()
+
+
   }
 
   _initInputHandler() {
@@ -48,15 +57,25 @@ export class TestScene extends Scene {
   }
 
   _initMap() {
-    this.groundShape = new GroundShape();
+    this.groundShape = new Background();
     this.addChild(this.groundShape);
   }
 
   _initPlayer() {
-    this.create_player("aaaa", 32, new Vec3(0, 0, 0))
-    this.create_snake("bbbb", 8, new Vec3(0, 0, 0))
-    this.cube = new Cube(200);
+    this.create_player("aaaa", 32, new Vec3(0, 0, -1))
+    // this.create_snake("bbbb", 8, new Vec3(0, 0, 0))
+    this.cube = new Wall(new Vec3(-4, 0, 0), new Vec2(1, 2));
     this.addChild(this.cube);
+
+    this.item = new Item(2);
+    this.addChild(this.item);
+    // console.log(this.item.getLocalEulerAngles());
+
+    this.screen1 = new ScreenPlay()
+    this.addChild(this.screen1);
+
+
+    // console.log(Collision.checkColistionBox(this.player, this.snakes[1].head));
   }
 
   _onPointerDown(event) {
@@ -77,16 +96,19 @@ export class TestScene extends Scene {
     }
     if (event.touches && event.touches[0]) {
       // this.player.playerMove.setVector(Helper.getVectorAngle(this.downPos, this.doRayCast(event.touches[0])))
-      this.player.playerMove.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.touches[0].x, event.touches[0].y))
+      this.player.move.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.touches[0].x, event.touches[0].y))
+      this.screen1.setMove(Helper.getVector(this.downPos.x, this.downPos.y, event.touches[0].x, event.touches[0].y))
     }
     else {
       // this.player.playerMove.setVector(Helper.getVectorAngle(this.downPos, this.doRayCast(event)))
-      this.player.playerMove.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
+      this.player.move.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
+      this.screen1.setMove(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
     }
   }
 
   _onPointerUp(e) {
     this.touchedDown = false
+    this.screen1.setDefault()
   }
 
 
@@ -112,7 +134,6 @@ export class TestScene extends Scene {
     this.directionalLight.setLocalPosition(2, 30, -2);
     this.directionalLight.setLocalEulerAngles(45, 135, 0);
 
-    // create directional light entity
     this.light = new pc.Entity("light");
     this.light.addComponent("light");
     this.addChild(this.light);
@@ -128,21 +149,22 @@ export class TestScene extends Scene {
     var cubeStack1 = new CubeStackManager(snake, 0.5);
     this.addChild(cubeStack1);
 
-    var detectPositionChange1 = snake.addScript(DetectPositionChanged, {
+    snake.detectPositionChange = snake.addScript(DetectPositionChanged, {
       onPositionChanged: cubeStack1.enqueuePosition.bind(cubeStack1),
       delta: 0.05,
     });
-    // Tween.createCountTween({
-    //   duration: 2,
-    //   loop: true,
-    //   onRepeat: () => {
-    //     this.cubeStack1.spawnCube();
-    //   },
-    // }).start();
+    Tween.createCountTween({
+      duration: 2,
+      loop: true,
+      onRepeat: () => {
+        var num = Helper.randomFloor(1, 9)
+        cubeStack1.spawnCube(Math.pow(2, num));
+      },
+    }).start();
     this.snakes.push({
       head: snake,
       cubeManager: cubeStack1,
-      detectPosChance: detectPositionChange1,
+      // detectPosChance: detectPositionChange,
     })
 
 
@@ -152,11 +174,12 @@ export class TestScene extends Scene {
     if (!this.player) {
       this.player = new Player(name, number);
       this.player.setLocalPosition(position)
+      // this.player.setLocalPosition(position.x, position.y + 10, position.z)
       this.addChild(this.player);
       this.cubeStack = new CubeStackManager(this.player, 0.5);
       this.addChild(this.cubeStack);
 
-      this.detectPositionChange = this.player.addScript(DetectPositionChanged, {
+      this.player.detectPositionChange = this.player.addScript(DetectPositionChanged, {
         onPositionChanged: this.cubeStack.enqueuePosition.bind(this.cubeStack),
         delta: 0.05,
       });
@@ -164,18 +187,25 @@ export class TestScene extends Scene {
       this.snakes.push({
         head: this.player,
         cubeManager: this.cubeStack,
-        detectPosChance: this.detectPositionChange,
+        // detectPosChance: this.detectPositionChange,
       })
 
       this.camera1.focus.objectFocus = this.player
+
     }
 
-    // Tween.createCountTween({
-    //   duration: 2,
-    //   loop: true,
-    //   onRepeat: () => {
-    //     this.cubeStack.spawnCube();
-    //   },
-    // }).start();
+    Tween.createCountTween({
+      duration: 2,
+      loop: true,
+      onRepeat: () => {
+        var num = Helper.randomFloor(1, 5)
+
+        this.cubeStack.spawnCube(Math.pow(2, num));
+      },
+    }).start();
   }
+
+
+
+
 }

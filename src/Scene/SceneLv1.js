@@ -69,13 +69,10 @@ export class SceneLv1 extends Scene {
 
     this.item = new Item(2);
     this.addChild(this.item);
-    // console.log(this.item.getLocalEulerAngles());
 
     this.screen1 = new ScreenPlay()
     this.addChild(this.screen1);
 
-
-    // console.log(Collision.checkColistionBox(this.player, this.snakes[1].head));
   }
 
   _onPointerDown(event) {
@@ -95,12 +92,10 @@ export class SceneLv1 extends Scene {
       return;
     }
     if (event.touches && event.touches[0]) {
-      // this.player.playerMove.setVector(Helper.getVectorAngle(this.downPos, this.doRayCast(event.touches[0])))
       this.player.move.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.touches[0].x, event.touches[0].y))
       this.screen1.setMove(Helper.getVector(this.downPos.x, this.downPos.y, event.touches[0].x, event.touches[0].y))
     }
     else {
-      // this.player.playerMove.setVector(Helper.getVectorAngle(this.downPos, this.doRayCast(event)))
       this.player.move.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
       this.screen1.setMove(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
     }
@@ -164,7 +159,6 @@ export class SceneLv1 extends Scene {
     this.snakes.push({
       head: snake,
       cubeManager: cubeStack1,
-      // detectPosChance: detectPositionChange,
     })
 
 

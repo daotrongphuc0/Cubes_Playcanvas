@@ -17,5 +17,14 @@ export class Wall extends Entity {
         this.addComponent("model", { type: "box", material: this.material });
         this.setLocalPosition(pos)
         this.setLocalScale(size.x, GameConstant.DEFAULT_HEIGHT_WALL, size.y)
+
+        this.addComponent("rigidbody", {
+            type: "static",
+        });
+
+        this.addComponent('collision', {
+            type: 'box',
+            halfExtents: new pc.Vec3(0.5, 0.5, 0.5)
+        });
     }
 }

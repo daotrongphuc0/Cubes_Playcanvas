@@ -19,6 +19,19 @@ export class Player extends Cube {
     var scale = Helper.getScaleByNumber(num);
     this.setLocalScale(scale, scale, scale)
 
+    this.addComponent("rigidbody", {
+      type: "kinematic",
+    });
+
+    this.addComponent('collision', {
+      type: 'box',
+      halfExtents: new pc.Vec3(0.5, 0.5, 0.5)
+    });
+
+    this.collision.on('collisionstart', () => {
+      console.log("có va chạm");
+    })
+
   }
 
 }

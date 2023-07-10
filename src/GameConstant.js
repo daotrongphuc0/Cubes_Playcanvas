@@ -34,4 +34,5 @@ export const GameConstant = Object.freeze({
     HEIGHT_ITEM: 0.01,
     SIZE_ITEM: 3,
 
+    HISTORY_POSITION_TIME: 15
 });

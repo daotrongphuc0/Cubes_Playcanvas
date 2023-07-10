@@ -49,7 +49,6 @@ export class CubeStackManager extends Entity {
     let isFirstCube = this.cubes.length === 0 || num > this.cubes[0].number;
     var i = 0;
     if (isFirstCube) {
-      console.log("fist");
       cubeAhead = this.player;
       i = 1
     }
@@ -64,8 +63,6 @@ export class CubeStackManager extends Entity {
     spawnPos.z += this.stackSpace;
     let cube = this.spawner.spawnTo(spawnPos, this);
 
-
-
     cube.manager = this;
 
     if (isFirstCube) {
@@ -75,7 +72,7 @@ export class CubeStackManager extends Entity {
       this.cubes.splice(i, 0, cube);
     }
     cube.setEulerAngles(cubeAhead.getEulerAngles());
-    let delayTime = isFirstCube ? 0.15 : cubeAhead.mover.delayTime + 0.1;
+    let delayTime = isFirstCube ? 0.1 : cubeAhead.mover.delayTime + 0.1;
     delayTime = Math.max(delayTime, 0.3);
     cube.reset(delayTime);
 

@@ -4,10 +4,12 @@ import { Button } from "../ui/button";
 import * as pc from "playcanvas";
 import { Game } from "../../game";
 import { UIScreen } from "../UIScreen";
+import { InputHandler, InputHandlerEvent } from "../../scripts/inputHandler";
 
 export class ScreenPlay extends Entity {
   constructor(isMobile = true) {
     super();
+    this.touchDown = false
     this.vector = new pc.Vec3()
     this.isMobile = isMobile;
     this.addComponent("screen", {

@@ -20,8 +20,8 @@ export class Camera extends pc.Entity {
         // this.script.create("orbitCamera", {
         //     attributes: {
         //         inertiaFactor: 0.1, // Override default of 0 (no inertia)
-        //         distanceMax: 50,
-        //         distanceMin: 1,
+        //         distanceMax: 150,
+        //         distanceMin: 20,
         //         pitchAngleMax: 90,
         //         pitchAngleMin: -90,
         //         focusEntity: null,

@@ -85,7 +85,7 @@ export class CubeStackManager extends Entity {
 
     setTimeout(() => {
       this.checkUpdateSnake()
-    }, 3000)
+    }, 2000)
 
     return cube;
   }
@@ -98,7 +98,6 @@ export class CubeStackManager extends Entity {
       this.cubes[0].destroy()
       this.cubes.splice(0, 1)
       let delayTime1 = 0
-      console.log("XXXX");
       this.cubes[0].reset(0.1)
       for (var i = 1; i < this.cubes.length; i++) {
         this.cubes[i].reset(delayTime1 + Helper.getScaleByNumber(this.cubes[i].number) + 0.005)
@@ -125,7 +124,7 @@ export class CubeStackManager extends Entity {
     if (isUpdate) {
       setTimeout(() => {
         this.checkUpdateSnake()
-      }, 3000)
+      }, 2000)
     }
   }
 

@@ -1,7 +1,7 @@
 import { Vec3 } from "playcanvas";
-import { Script } from "../systems/script/script";
-import { Time } from "../systems/time/time";
-import { CubeStackManager } from "../Object/cubeStackManager";
+import { Script } from "../../systems/script/script";
+import { Time } from "../../systems/time/time";
+import { CubeStackManager } from "../../Object/cubeStackManager";
 
 export const MoveWithPath = Script.createScript({
   name: "moveWithPath",
@@ -22,6 +22,10 @@ export const MoveWithPath = Script.createScript({
       position: new Vec3(),
       time: 0,
     };
+  },
+
+  setSpeed(speed) {
+    this.speed = speed
   },
 
   update() {

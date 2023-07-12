@@ -1,7 +1,7 @@
 import { Vec2, Vec3, log } from "playcanvas";
-import { Script } from "../systems/script/script";
-import { Time } from "../systems/time/time";
-import { Helper } from "../Helper/Helper";
+import { Script } from "../../systems/script/script";
+import { Time } from "../../systems/time/time";
+import { Helper } from "../../Helper/Helper";
 
 export const SnakeMove = Script.createScript({
     name: "SnakeMove",
@@ -36,6 +36,9 @@ export const SnakeMove = Script.createScript({
 
     getVector() {
         return this.vector
+    },
+    setSpeed(speed) {
+        this.speed = speed
     }
 
 });

@@ -1,6 +1,5 @@
 import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec2, Vec3, Vec4 } from "playcanvas";
 import { InputHandler, InputHandlerEvent } from "../scripts/inputHandler";
-import { Player } from "../Object/player";
 import { DetectPositionChanged } from "../scripts/detectPositionChanged";
 import { CubeStackManager } from "../Object/cubeStackManager";
 import { Tween } from "../systems/tween/tween";
@@ -14,9 +13,9 @@ import { Snake } from "../Object/Snake";
 import { Wall } from "../Object/Wall";
 import { Background } from "../Object/Background";
 import { Item } from "../Object/Item";
-import { Button } from "../ui/ui/button";
+import data from "../../assets/json/datalv1.json";
 import { ScreenPlay } from "../ui/Screen/ScreenPlay";
-import { Collision } from "../Helper/Collision";
+
 
 export class SceneLv1 extends Scene {
   constructor() {
@@ -24,11 +23,11 @@ export class SceneLv1 extends Scene {
     this.snakes = []
     this.box = []
     this.player = null
+    this.wall = []
   }
 
   create() {
     super.create();
-
     this._initialize();
   }
 
@@ -36,14 +35,12 @@ export class SceneLv1 extends Scene {
     this._initInputHandler();
     this._initLight();
     this._initCamera();
+    this._initBackground();
     this._initMap();
     this._initPlayer();
 
-    this.ray = new pc.Ray();
-    this.hitPosition = new pc.Vec3();
     this.touchedDown = false;
     this.downPos = new Vec2()
-
 
   }
 
@@ -56,34 +53,72 @@ export class SceneLv1 extends Scene {
     this.inputHandler.on(InputHandlerEvent.PointerUp, this._onPointerUp, this);
   }
 
+  _initBackground() {
+    this.backGround = new Background(data.background.size[0], data.background.size[1]);
+    this.addChild(this.backGround);
+
+    var wallTop = new Wall(new Vec3(data.background.size[0] / 2 + GameConstant.SIZE_WALL_AROUND, 0, 0),
+      new Vec2(GameConstant.SIZE_WALL_AROUND * 2, data.background.size[1] + GameConstant.SIZE_WALL_AROUND * 4))
+    this.addChild(wallTop)
+    this.wall.push(wallTop)
+
+    var wallRight = new Wall(new Vec3(0, 0, data.background.size[1] / 2 + GameConstant.SIZE_WALL_AROUND),
+      new Vec2(data.background.size[0] + GameConstant.SIZE_WALL_AROUND * 4, GameConstant.SIZE_WALL_AROUND * 2))
+    this.addChild(wallRight)
+    this.wall.push(wallRight)
+
+    var wallBot = new Wall(new Vec3(-(data.background.size[0] / 2 + GameConstant.SIZE_WALL_AROUND), 0, 0),
+      new Vec2(GameConstant.SIZE_WALL_AROUND * 2, data.background.size[1] + GameConstant.SIZE_WALL_AROUND * 4))
+    this.addChild(wallBot)
+    this.wall.push(wallBot)
+
+    var wallLeft = new Wall(new Vec3(0, 0, -(data.background.size[1] / 2 + GameConstant.SIZE_WALL_AROUND)),
+      new Vec2(data.background.size[0] + GameConstant.SIZE_WALL_AROUND * 4, GameConstant.SIZE_WALL_AROUND * 2))
+    this.addChild(wallLeft)
+    this.wall.push(wallLeft)
+  }
+
   _initMap() {
-    this.groundShape = new Background();
-    this.addChild(this.groundShape);
+    data.map.forEach(element => {
+      var wall = new Wall(new Vec3(element.position[0], element.position[1], element.position[2]),
+        new Vec2(element.size[0], element.size[1]))
+      this.addChild(wall)
+      this.wall.push(wall)
+    })
+
+
+    data.items.list.forEach(element => {
+      var item = new Item(Helper.randomFloor(0, data.items.count),);
+      item.setLocalPosition(element.position[0], 0.1, element.position[2])
+      this.addChild(item)
+    })
   }
 
   _initPlayer() {
     this.create_player("aaaa", 32, new Vec3(0, 0, -1))
     // this.create_snake("bbbb", 8, new Vec3(0, 0, 0))
-    this.cube = new Wall(new Vec3(-4, 0, 0), new Vec2(1, 2));
-    this.addChild(this.cube);
 
-    this.item = new Item(2);
-    this.addChild(this.item);
 
     this.screen1 = new ScreenPlay()
     this.addChild(this.screen1);
+    this.screen1.speedButton.element.on("mousedown", this.onSpeedButtonDown, this);
+    this.screen1.speedButton.element.on("mouseup", this.onSpeedButtonUp, this);
+    this.screen1.speedButton.element.on("touchstart", this.onSpeedButtonDown, this);
+    this.screen1.speedButton.element.on("touchend", this.onSpeedButtonUp, this);
 
   }
 
   _onPointerDown(event) {
-    this.touchedDown = true;
-    if (event.touches && event.touches[0]) {
-      this.downPos.x = event.touches[0].x
-      this.downPos.y = event.touches[0].y
-    }
-    else {
-      this.downPos.x = event.x
-      this.downPos.y = event.y
+    if (event.x / window.innerWidth < 0.5) {
+      this.touchedDown = true;
+      if (event.touches && event.touches[0]) {
+        this.downPos.x = event.touches[0].x
+        this.downPos.y = event.touches[0].y
+      }
+      else {
+        this.downPos.x = event.x
+        this.downPos.y = event.y
+      }
     }
   }
 
@@ -105,7 +140,6 @@ export class SceneLv1 extends Scene {
     this.touchedDown = false
     this.screen1.setDefault()
   }
-
 
   _initCamera() {
     this.camera1 = new Camera();
@@ -136,16 +170,16 @@ export class SceneLv1 extends Scene {
     this.light.setPosition(-7.42, 13, 1.23)
   }
 
-
   create_snake(name = "", number, position = new Vec3) {
     var snake = new Snake(name, number);
     this.addChild(snake);
     snake.setLocalPosition(position)
-    var cubeStack1 = new CubeStackManager(snake, 0.5);
-    this.addChild(cubeStack1);
+
+    snake.cubeStack = new CubeStackManager(snake, 0.5);
+    this.addChild(snake.cubeStack);
 
     snake.detectPositionChange = snake.addScript(DetectPositionChanged, {
-      onPositionChanged: cubeStack1.enqueuePosition.bind(cubeStack1),
+      onPositionChanged: snake.cubeStack.enqueuePosition.bind(snake.cubeStack),
       delta: 0.05,
     });
     Tween.createCountTween({
@@ -153,53 +187,46 @@ export class SceneLv1 extends Scene {
       loop: true,
       onRepeat: () => {
         var num = Helper.randomFloor(1, 9)
-        cubeStack1.spawnCube(Math.pow(2, num));
+        cubeStack.spawnCube(Math.pow(2, num));
       },
     }).start();
-    this.snakes.push({
-      head: snake,
-      cubeManager: cubeStack1,
-    })
+    this.snakes.push(snake)
 
 
   }
 
   create_player(name = "", number = 2, position = new Vec3) {
     if (!this.player) {
-      this.player = new Player(name, number);
+      this.player = new Snake(name, number);
       this.player.setLocalPosition(position)
-      // this.player.setLocalPosition(position.x, position.y + 10, position.z)
       this.addChild(this.player);
-      this.cubeStack = new CubeStackManager(this.player, 0.5);
-      this.addChild(this.cubeStack);
-
+      this.player.cubeStack = new CubeStackManager(this.player, 0.5);
+      this.addChild(this.player.cubeStack);
       this.player.detectPositionChange = this.player.addScript(DetectPositionChanged, {
-        onPositionChanged: this.cubeStack.enqueuePosition.bind(this.cubeStack),
+        onPositionChanged: this.player.cubeStack.enqueuePosition.bind(this.player.cubeStack),
         delta: 0.05,
       });
 
-      this.snakes.push({
-        head: this.player,
-        cubeManager: this.cubeStack,
-        // detectPosChance: this.detectPositionChange,
-      })
-
+      this.snakes.push(this.player)
       this.camera1.focus.objectFocus = this.player
-
     }
-
     Tween.createCountTween({
       duration: 2,
       loop: true,
+      repeat: 3,
+      repeatDelay: 3,
       onRepeat: () => {
         var num = Helper.randomFloor(1, 5)
-
-        this.cubeStack.spawnCube(Math.pow(2, num));
+        this.player.cubeStack.spawnCube(Math.pow(2, num));
       },
     }).start();
   }
 
-
-
+  onSpeedButtonDown() {
+    this.player.setSpeed(4)
+  }
+  onSpeedButtonUp() {
+    this.player.setSpeed(2)
+  }
 
 }

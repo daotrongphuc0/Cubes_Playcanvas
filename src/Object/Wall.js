@@ -24,7 +24,11 @@ export class Wall extends Entity {
 
         this.addComponent('collision', {
             type: 'box',
-            halfExtents: new pc.Vec3(0.5, 0.5, 0.5)
+            halfExtents: new pc.Vec3(size.x / 2, GameConstant.DEFAULT_HEIGHT_WALL / 2, size.y / 2)
         });
+    }
+
+    destroy() {
+        super.destroy()
     }
 }

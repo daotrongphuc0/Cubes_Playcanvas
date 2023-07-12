@@ -1,5 +1,5 @@
 import { Color, Entity, StandardMaterial } from "playcanvas";
-import { MoveWithPath } from "../scripts/moveWithPath";
+import { MoveWithPath } from "../scripts/moveObject/moveWithPath";
 import { GameConstant } from "../GameConstant";
 import { AssetsLoader } from "../assets/AssetsLoader";
 import { Helper } from "../Helper/Helper";
@@ -27,7 +27,17 @@ export class Cube extends Entity {
     this.initText();
     this.updateColor();
 
+    this.addComponent("rigidbody", {
+      type: "kinematic",
+    });
+
+    this.addComponent('collision', {
+      type: 'box',
+      halfExtents: new pc.Vec3(this.getLocalScale().x, this.getLocalScale().y, this.getLocalScale().z)
+    });
+
   }
+
 
   reset(delayTime) {
     this.activeMove(true);

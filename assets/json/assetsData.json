@@ -1,17 +1,17 @@
 [
     {
-        "key": "spr_item_1",
+        "key": "itemspeed",
         "url": "assets/images/itemspeed.png",
         "type": "texture"
     },
     {
-        "key": "tspr_item_2",
-        "url": "assets/images/khien.png",
+        "key": "itemx2",
+        "url": "assets/images/x2.png",
         "type": "texture"
     },
     {
-        "key": "spr_item_3",
-        "url": "assets/images/x2.png",
+        "key": "itemkhien",
+        "url": "assets/images/khien.png",
         "type": "texture"
     },
     {

@@ -8,6 +8,7 @@ import { Time } from "./systems/time/time"
 import { Tween } from "./systems/tween/tween"
 import { GameConstant } from "./GameConstant";
 import { SceneLv1 } from "./Scene/SceneLv1";
+import { PlayScreen } from "./ui/Screen/playScreen";
 export class Game {
     static init() {
         const canvas = document.createElement("canvas");
@@ -31,6 +32,19 @@ export class Game {
             AssetsLoader.loadAssets(this.app)
         });
         this.app.systems.rigidbody.gravity.set(0, -0, 0)
+
+        this.app.on("initialize", () => {
+            document.addEventListener("keydown", (event) => {
+                SceneManager.currentScene.keydown(event)
+            });
+
+            document.addEventListener("keyup", (event) => {
+                SceneManager.currentScene.keyup(event)
+            });
+        });
+
+        // Đưa scene vào trong DOM
+        document.body.appendChild(this.app.graphicsDevice.canvas);
     }
 
     static load() {
@@ -53,7 +67,6 @@ export class Game {
             new SceneLv1(),
         ]);
         SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_TEST));
-
     }
 
     static update(dt) {

@@ -24,6 +24,12 @@ export const MoveWithPath = Script.createScript({
     };
   },
 
+  enable() {
+    this.enabled = true
+    this.findNextTarget()
+  },
+
+
   setSpeed(speed) {
     this.speed = speed
   },

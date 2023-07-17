@@ -4,7 +4,6 @@ import { Cube } from "./cube";
 import { Time } from "../systems/time/time";
 import { Helper } from "../Helper/Helper";
 import { GameConstant } from "../GameConstant";
-import { update } from "@tweenjs/tween.js";
 
 
 export const CubeStackManagerEvent = Object.freeze({
@@ -31,6 +30,10 @@ export class CubeStackManager extends Entity {
       position,
       time: Time.current,
     });
+
+    if (this.positionQueue.length > GameConstant.LIMIT_TIME_POS_QUEUE / Time.dt) {
+      this.positionQueue.splice(0, this.positionQueue.length - Math.floor(GameConstant.LIMIT_TIME_POS_QUEUE / Time.dt))
+    }
   }
 
   stopMove() {
@@ -58,7 +61,6 @@ export class CubeStackManager extends Entity {
       while (i < this.cubes.length && this.cubes[i].number >= num) {
         i++;
       }
-      // this.cubes.splice(i, 0, cube);
       cubeAhead = this.cubes[i - 1];
     }
     let spawnPos = cubeAhead.getPosition();
@@ -86,14 +88,13 @@ export class CubeStackManager extends Entity {
     setTimeout(() => {
       this.checkUpdateSnake()
     }, 2000)
-
     return cube;
   }
 
   checkUpdateSnake() {
     var isUpdate = false
     var x = 1;
-    if (this.player.number === this.cubes[0].number) {
+    if (this.cubes[0] && this.player.number === this.cubes[0].number) {
       this.player.levelUp()
       this.cubes[0].destroy()
       this.cubes.splice(0, 1)

@@ -8,7 +8,7 @@ export class Item extends Entity {
     constructor(type = 0) {
         super()
 
-        this.type = 1
+        this.type = assetsData[type].key
         this.material = new pc.StandardMaterial()
         this.material.diffuseMap = AssetsLoader.getAssetByKey(assetsData[type].key).resource
         this.material.diffuseTint = true

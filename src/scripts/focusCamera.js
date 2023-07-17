@@ -8,7 +8,6 @@ export const FocusCamera = Script.createScript({
         objectFocus: { default: null },
     },
 
-
     update() {
         if (this.objectFocus) {
             var objPos = this.objectFocus.getLocalPosition()

@@ -6,7 +6,6 @@ import { Tween } from "../systems/tween/tween";
 import { GameConstant } from "../GameConstant";
 import { Scene } from "./Scene";
 import { Camera } from "../Object/Camera";
-import { GroundShape } from "../Object/GroundShape";
 import { Helper } from "../Helper/Helper";
 import { Cube } from "../Object/cube";
 import { Snake } from "../Object/Snake";
@@ -14,14 +13,14 @@ import { Wall } from "../Object/Wall";
 import { Background } from "../Object/Background";
 import { Item } from "../Object/Item";
 import data from "../../assets/json/datalv1.json";
-import { ScreenPlay } from "../ui/Screen/ScreenPlay";
+import { PlayScreen } from "../ui/Screen/playScreen";
 
 
 export class SceneLv1 extends Scene {
   constructor() {
     super(GameConstant.SCENE_TEST);
     this.snakes = []
-    this.box = []
+    this.cubes = []
     this.player = null
     this.wall = []
   }
@@ -85,7 +84,6 @@ export class SceneLv1 extends Scene {
       this.addChild(wall)
       this.wall.push(wall)
     })
-
 
     data.items.list.forEach(element => {
       var item = new Item(Helper.randomFloor(0, data.items.count),);
@@ -182,14 +180,14 @@ export class SceneLv1 extends Scene {
       onPositionChanged: snake.cubeStack.enqueuePosition.bind(snake.cubeStack),
       delta: 0.05,
     });
-    Tween.createCountTween({
-      duration: 2,
-      loop: true,
-      onRepeat: () => {
-        var num = Helper.randomFloor(1, 9)
-        cubeStack.spawnCube(Math.pow(2, num));
-      },
-    }).start();
+    // Tween.createCountTween({
+    //   duration: 2,
+    //   loop: true,
+    //   onRepeat: () => {
+    //     var num = Helper.randomFloor(1, 4)
+    //     snake.cubeStack.spawnCube(Math.pow(2, num));
+    //   },
+    // }).start();
     this.snakes.push(snake)
 
 

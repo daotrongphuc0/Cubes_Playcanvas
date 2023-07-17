@@ -3,13 +3,13 @@ import { MoveWithPath } from "../scripts/moveObject/moveWithPath";
 import { GameConstant } from "../GameConstant";
 import { AssetsLoader } from "../assets/AssetsLoader";
 import { Helper } from "../Helper/Helper";
+import { SceneManager } from "../Scene/SceneManager";
+import { Wall } from "./Wall";
 
 export class Cube extends Entity {
   constructor(number = 64) {
     super("cube");
     this.number = number;
-
-    this.type = 2
 
     this.material = new StandardMaterial();
     this.textEntity = new Entity();
@@ -21,6 +21,7 @@ export class Cube extends Entity {
     });
 
     this.manager = null
+    // this.moveDueToColis =  this.addScript()
 
     this.activeMove(false);
     this.updateScale();
@@ -35,9 +36,7 @@ export class Cube extends Entity {
       type: 'box',
       halfExtents: new pc.Vec3(this.getLocalScale().x, this.getLocalScale().y, this.getLocalScale().z)
     });
-
   }
-
 
   reset(delayTime) {
     this.activeMove(true);

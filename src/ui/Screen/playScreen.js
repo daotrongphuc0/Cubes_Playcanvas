@@ -1,7 +1,10 @@
 import { Vec2, Vec4 } from "playcanvas";
 import { GameConstant } from "../../GameConstant";
 import { UIScreen } from "../UIScreen"
-import { Button } from "../ui/button";
+import { ButtonSpeed } from "../ui/buttonSpeed";
+import { ButtonMove } from "../ui/buttonMove";
+import { BgButtonMove } from "../ui/bg_buttonMove";
+
 
 export class PlayScreen extends UIScreen {
   constructor() {

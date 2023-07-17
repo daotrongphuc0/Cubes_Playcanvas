@@ -40,6 +40,9 @@ export class UIScreen extends Entity {
     resize() {
     }
 
+    keydown() { }
+    keyup() { }
+
     getScreenSpacePosition(deviceScreenPos, dst = new Vec3()) {
         dst.x = deviceScreenPos.x * Game.app.graphicsDevice.maxPixelRatio;
         dst.y = Game.app.graphicsDevice.height - deviceScreenPos.y * Game.app.graphicsDevice.maxPixelRatio;

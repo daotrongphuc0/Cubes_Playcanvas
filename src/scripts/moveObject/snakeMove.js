@@ -2,6 +2,8 @@ import { Vec2, Vec3, log } from "playcanvas";
 import { Script } from "../../systems/script/script";
 import { Time } from "../../systems/time/time";
 import { Helper } from "../../Helper/Helper";
+import * as pc from "playcanvas"
+import { SceneManager } from "../../Scene/SceneManager";
 
 export const SnakeMove = Script.createScript({
     name: "SnakeMove",
@@ -11,6 +13,7 @@ export const SnakeMove = Script.createScript({
 
     _tmpPos: new Vec3(),
     vector: new Vec3(1, 0, 0),
+    vectorDisable: new Vec3(0, 0, 0),
 
     update() {
         var direction = this.vector
@@ -20,6 +23,25 @@ export const SnakeMove = Script.createScript({
         this._tmpPos.copy(this.entity.getPosition());
         this._tmpPos.x += xMovement;
         this._tmpPos.z += zMovement;
+        for (var i = 0; i < SceneManager.currentScene.wall.length; i++) {
+            if (SceneManager.currentScene.wall[i].orientedBox.containsPoint(this._tmpPos)) {
+                this._tmpPos.x -= xMovement;
+                if (SceneManager.currentScene.wall[i].orientedBox.containsPoint(this._tmpPos)) {
+                    this._tmpPos.x += xMovement;
+                } else {
+                    continue;
+                }
+                this._tmpPos.z -= zMovement;
+                if (SceneManager.currentScene.wall[i].orientedBox.containsPoint(this._tmpPos)) {
+                    this._tmpPos.z += zMovement;
+                } else {
+                    continue;
+                }
+                this._tmpPos.x -= xMovement;
+                this._tmpPos.z -= zMovement;
+                break;
+            }
+        }
         this.entity.setPosition(this._tmpPos);
     },
 

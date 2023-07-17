@@ -1,4 +1,4 @@
-import { Color, Entity, LIGHTTYPE_DIRECTIONAL, Vec2, Vec3, Vec4 } from "playcanvas";
+import { Color, Entity, Keyboard, LIGHTTYPE_DIRECTIONAL, Vec2, Vec3, Vec4, events } from "playcanvas";
 import { InputHandler, InputHandlerEvent } from "../scripts/inputHandler";
 import { DetectPositionChanged } from "../scripts/detectPositionChanged";
 import { CubeStackManager } from "../Object/cubeStackManager";
@@ -27,29 +27,80 @@ export class SceneLv1 extends Scene {
 
   create() {
     super.create();
+    this.ui.addScreens(
+      new PlayScreen()
+    );
+    this.screenplay = this.ui.getScreen(GameConstant.SCREEN_PLAY);
+    this.ui.setScreenActive(GameConstant.SCREEN_PLAY);
     this._initialize();
   }
 
   _initialize() {
-    this._initInputHandler();
+    this._initInputBtSpeed();
+    this._initInputBtMove();
     this._initLight();
     this._initCamera();
     this._initBackground();
     this._initMap();
     this._initPlayer();
+    this.spawns()
 
     this.touchedDown = false;
     this.downPos = new Vec2()
 
   }
 
-  _initInputHandler() {
-    let inputHandlerEntity = new Entity("input");
-    this.inputHandler = inputHandlerEntity.addScript(InputHandler);
-    this.addChild(inputHandlerEntity);
-    this.inputHandler.on(InputHandlerEvent.PointerDown, this._onPointerDown, this);
-    this.inputHandler.on(InputHandlerEvent.PointerMove, this._onPointerMove, this);
-    this.inputHandler.on(InputHandlerEvent.PointerUp, this._onPointerUp, this);
+  _initInputBtSpeed() {
+    this.screenplay.btSpeed.element.on('mousedown', this.onSpeedButtonDown, this)
+    this.screenplay.btSpeed.element.on('mouseup', this.onSpeedButtonUp, this)
+    this.screenplay.btSpeed.element.on('touchstart', this.onSpeedButtonDown, this)
+    this.screenplay.btSpeed.element.on('touchend', this.onSpeedButtonUp, this)
+  }
+
+  keydown(event) {
+    if (event.keyCode === 32) {
+      this.onSpeedButtonDown()
+    }
+  }
+
+  keyup(event) {
+    if (event.keyCode === 32) {
+      this.onSpeedButtonUp()
+    }
+  }
+
+  onSpeedButtonDown() {
+    this.player.setSpeed(GameConstant.PLAYER_SPEED_UP)
+  }
+  onSpeedButtonUp() {
+    this.player.setSpeed(GameConstant.PLAYER_SPEED)
+  }
+
+  _initInputBtMove() {
+    this.screenplay.BgbtMove.element.on('mousedown', this.onBtMoveDown, this)
+    this.screenplay.BgbtMove.element.on('mousemove', this.onBtMoveMove, this)
+    this.screenplay.BgbtMove.element.on('mouseup', this.onBtMoveUp, this)
+    this.screenplay.BgbtMove.element.on('touchstart', this.onBtMoveDown, this)
+    this.screenplay.BgbtMove.element.on('touchmove', this.onBtMoveMove, this)
+    this.screenplay.BgbtMove.element.on('touchend', this.onBtMoveUp, this)
+  }
+
+  onBtMoveDown(event) {
+    this.touchedDown = true
+    this.downPos.x = event.x
+    this.downPos.y = event.y
+  }
+
+  onBtMoveMove(event) {
+    if (this.touchedDown) {
+      this.player.move.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
+      this.screenplay.setMove(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
+    }
+  }
+
+  onBtMoveUp(event) {
+    this.touchedDown = false
+    this.screenplay.setDefault()
   }
 
   _initBackground() {
@@ -93,50 +144,8 @@ export class SceneLv1 extends Scene {
   }
 
   _initPlayer() {
-    this.create_player("aaaa", 32, new Vec3(0, 0, -1))
-    // this.create_snake("bbbb", 8, new Vec3(0, 0, 0))
-
-
-    this.screen1 = new ScreenPlay()
-    this.addChild(this.screen1);
-    this.screen1.speedButton.element.on("mousedown", this.onSpeedButtonDown, this);
-    this.screen1.speedButton.element.on("mouseup", this.onSpeedButtonUp, this);
-    this.screen1.speedButton.element.on("touchstart", this.onSpeedButtonDown, this);
-    this.screen1.speedButton.element.on("touchend", this.onSpeedButtonUp, this);
-
-  }
-
-  _onPointerDown(event) {
-    if (event.x / window.innerWidth < 0.5) {
-      this.touchedDown = true;
-      if (event.touches && event.touches[0]) {
-        this.downPos.x = event.touches[0].x
-        this.downPos.y = event.touches[0].y
-      }
-      else {
-        this.downPos.x = event.x
-        this.downPos.y = event.y
-      }
-    }
-  }
-
-  _onPointerMove(event) {
-    if (!this.touchedDown) {
-      return;
-    }
-    if (event.touches && event.touches[0]) {
-      this.player.move.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.touches[0].x, event.touches[0].y))
-      this.screen1.setMove(Helper.getVector(this.downPos.x, this.downPos.y, event.touches[0].x, event.touches[0].y))
-    }
-    else {
-      this.player.move.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
-      this.screen1.setMove(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
-    }
-  }
-
-  _onPointerUp(e) {
-    this.touchedDown = false
-    this.screen1.setDefault()
+    this.create_player("aaaa", 64, new Vec3(0, 0, -15))
+    this.create_snake("bbbb", 8, new Vec3(0, 0, 3))
   }
 
   _initCamera() {
@@ -208,23 +217,56 @@ export class SceneLv1 extends Scene {
       this.snakes.push(this.player)
       this.camera1.focus.objectFocus = this.player
     }
-    Tween.createCountTween({
-      duration: 2,
-      loop: true,
-      repeat: 3,
-      repeatDelay: 3,
-      onRepeat: () => {
-        var num = Helper.randomFloor(1, 5)
-        this.player.cubeStack.spawnCube(Math.pow(2, num));
-      },
-    }).start();
+    // Tween.createCountTween({
+    //   duration: 2,
+    //   loop: true,
+    //   repeat: 3,
+    //   repeatDelay: 3,
+    //   onRepeat: () => {
+    //     var num = Helper.randomFloor(1, 5)
+    //     this.player.cubeStack.spawnCube(Math.pow(2, num));
+    //   },
+    // }).start();
   }
 
-  onSpeedButtonDown() {
-    this.player.setSpeed(4)
-  }
-  onSpeedButtonUp() {
-    this.player.setSpeed(2)
+
+
+  spawns() {
+    for (var i = this.cubes.length; i < data.cube.count; i++) {
+      this.spawn()
+    }
   }
 
+  spawn(cube = new Cube(2)) {
+    console.log("spawn");
+    var x = Helper.randomFloor(-data.background.size[0] / 2 - 1, data.background.size[0] / 2 - 1)
+    var y = Helper.randomFloor(-data.background.size[1] / 2, data.background.size[1] / 2)
+    var num = Helper.randomFloor(0, 4)
+
+    cube.setLocalPosition(x, 0, y)
+    this.wall.forEach(element => {
+      if (element.orientedBox.containsPoint(cube.getLocalPosition())) {
+        this.spawn(cube)
+        return;
+      }
+    })
+    cube.updateChance(Math.pow(2, num))
+    this.addChild(cube)
+    this.cubes.push(cube)
+  }
+
+  randomPosition(cube) {
+    var x = Helper.randomFloor(-data.background.size[0] / 2 - 1, data.background.size[0] / 2 - 1)
+    var y = Helper.randomFloor(-data.background.size[1] / 2, data.background.size[1] / 2)
+    var num = Helper.randomFloor(0, 4)
+    cube.setLocalPosition(x, 0, y)
+    this.wall.forEach(element => {
+      if (element.orientedBox.containsPoint(cube.getLocalPosition())) {
+        this.randomPosition(cube)
+        return;
+      }
+    })
+    cube.updateChance(Math.pow(2, num))
+  }
 }
+

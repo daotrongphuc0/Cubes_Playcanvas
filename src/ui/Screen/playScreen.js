@@ -10,12 +10,36 @@ export class PlayScreen extends UIScreen {
   }
 
   _initButtonControls() {
-    this.leftButton = new Button({
-      anchor: new Vec4(0.7, 0.15, 0.7, 0.15),
+
+    this.btSpeed = new ButtonSpeed({
+      anchor: new Vec4(0.8, 0.3, 0.8, 0.3),
       pivot: new Vec2(0.5, 0.5),
       margin: new Vec4(),
     });
-    this.addChild(this.leftButton);
-    this.leftButton.text.element.text = "Left";
+    this.addChild(this.btSpeed);
+
+    this.btMove = new ButtonMove({
+      anchor: new Vec4(0.2, 0.3, 0.2, 0.3),
+      pivot: new Vec2(0.5, 0.5),
+      margin: new Vec4(),
+    });
+    this.addChild(this.btMove);
+
+    this.BgbtMove = new BgButtonMove({
+      anchor: new Vec4(0.2, 0.3, 0.2, 0.3),
+      pivot: new Vec2(0.5, 0.5),
+      margin: new Vec4(),
+    });
+    this.addChild(this.BgbtMove);
+  }
+
+  setMove(vector) {
+    var distance = 40 * Math.sqrt(2)
+    let angle = Math.atan2(vector.x, vector.z);
+    this.btMove.setLocalPosition(distance * Math.cos(angle), distance * Math.sin(angle), 0);
+  }
+
+  setDefault() {
+    this.btMove.setLocalPosition(0, 0, 0);
   }
 }

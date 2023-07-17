@@ -63,6 +63,7 @@ export class Snake extends Cube {
 		if (!isMyCube) {
 			if (otherEntity.number <= this.number) {
 				this.cubeStack.spawnCube(otherEntity.number)
+				// SceneManager.currentScene.removeChild(otherEntity)
 				SceneManager.currentScene.randomPosition(otherEntity)
 			}
 			// else{

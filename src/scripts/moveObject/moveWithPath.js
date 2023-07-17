@@ -9,7 +9,6 @@ export const MoveWithPath = Script.createScript({
   attributes: {
     speed: { default: 1 },
     delayTime: { default: 0 },
-    scaleDelayTime: { default: 0.01 },
   },
 
   interpolation: null,

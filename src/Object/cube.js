@@ -14,6 +14,8 @@ export class Cube extends Entity {
     this.material = new StandardMaterial();
     this.textEntity = new Entity();
 
+    this.speedUp = false
+
     this.modelAsset = AssetsLoader.getAssetByKey("box")
     this.addComponent("model", { asset: this.modelAsset });
     this.mover = this.addScript(MoveWithPath, {
@@ -107,6 +109,22 @@ export class Cube extends Entity {
 
   destroy() {
     super.destroy()
+  }
+
+  speedIncrease(speed) {
+    if (!this.speedUp) {
+      this.mover.setSpeed(speed)
+      this.speedUp = true
+      this.mover.reset(this.mover.delayTime * (this.mover.speed / (speed * GameConstant.RATE_DELAYTIME)))
+    }
+  }
+
+  speedReduce(speed) {
+    if (this.speedUp) {
+      this.speedUp = false
+      this.mover.setSpeed(speed)
+      this.mover.reset(this.mover.delayTime * (this.mover.speed / speed) * GameConstant.RATE_DELAYTIME)
+    }
   }
 
 }

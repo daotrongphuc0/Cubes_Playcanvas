@@ -49,6 +49,10 @@ export class CubeStackManager extends Entity {
   }
 
   spawnCube(num) {
+    if (this.player.speedUp) {
+      this.player.setSpeedReduce(GameConstant.PLAYER_SPEED)
+      var isPlayerSpeedUp = true
+    }
     this.spawner.args = num
     let cubeAhead;
     let isFirstCube = this.cubes.length === 0 || num > this.cubes[0].number;
@@ -77,12 +81,13 @@ export class CubeStackManager extends Entity {
     }
     cube.setEulerAngles(cubeAhead.getEulerAngles());
     let delayTime = isFirstCube ? 0.1 : cubeAhead.mover.delayTime + 0.1;
-    delayTime = Math.max(delayTime, 0.3);
     cube.reset(delayTime);
 
     for (i; i < this.cubes.length; i++) {
-      this.cubes[i].reset(delayTime + Helper.getScaleByNumber(this.cubes[i].number) + 0.005)
-      delayTime += Helper.getScaleByNumber(this.cubes[i].number) + 0.005
+      this.cubes[i].reset(this.cubes[i - 1].mover.delayTime + Helper.getScaleByNumber(this.cubes[i].number) / 2 + 0.1)
+    }
+    if (isPlayerSpeedUp) {
+      this.player.setSpeedIncrease(GameConstant.PLAYER_SPEED_UP)
     }
 
     setTimeout(() => {
@@ -92,17 +97,20 @@ export class CubeStackManager extends Entity {
   }
 
   checkUpdateSnake() {
+
+    if (this.player.speedUp) {
+      this.player.setSpeedReduce(GameConstant.PLAYER_SPEED)
+      var isPlayerSpeedUp = true
+    }
     var isUpdate = false
     var x = 1;
     if (this.cubes[0] && this.player.number === this.cubes[0].number) {
       this.player.levelUp()
       this.cubes[0].destroy()
       this.cubes.splice(0, 1)
-      let delayTime1 = 0
-      this.cubes[0].reset(0.1)
+      this.cubes[0].reset(0.2)
       for (var i = 1; i < this.cubes.length; i++) {
-        this.cubes[i].reset(delayTime1 + Helper.getScaleByNumber(this.cubes[i].number) + 0.005)
-        delayTime1 += Helper.getScaleByNumber(this.cubes[i].number) + 0.005
+        this.cubes[i].reset(this.cubes[i].mover.delayTime + Helper.getScaleByNumber(this.cubes[i].number) / 2 + 0.1)
       }
       x++
       isUpdate = true
@@ -121,6 +129,9 @@ export class CubeStackManager extends Entity {
         x += 2
         isUpdate = true
       }
+    }
+    if (isPlayerSpeedUp) {
+      this.player.setSpeedIncrease(GameConstant.PLAYER_SPEED_UP)
     }
     if (isUpdate) {
       setTimeout(() => {

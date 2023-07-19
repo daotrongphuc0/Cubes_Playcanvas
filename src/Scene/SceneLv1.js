@@ -43,7 +43,10 @@ export class SceneLv1 extends Scene {
     this._initBackground();
     this._initMap();
     this._initPlayer();
-    this.spawns()
+    // this.spawns()
+
+    var newCube = new Cube(2)
+    this.addChild(newCube)
 
     this.touchedDown = false;
     this.downPos = new Vec2()
@@ -70,10 +73,10 @@ export class SceneLv1 extends Scene {
   }
 
   onSpeedButtonDown() {
-    this.player.setSpeed(GameConstant.PLAYER_SPEED_UP)
+    this.player.setSpeedIncrease(GameConstant.PLAYER_SPEED_UP)
   }
   onSpeedButtonUp() {
-    this.player.setSpeed(GameConstant.PLAYER_SPEED)
+    this.player.setSpeedReduce(GameConstant.PLAYER_SPEED)
   }
 
   _initInputBtMove() {
@@ -144,7 +147,7 @@ export class SceneLv1 extends Scene {
   }
 
   _initPlayer() {
-    this.create_player("aaaa", 64, new Vec3(0, 0, -15))
+    this.create_player("aaaa", 8, new Vec3(0, 0, -15))
     this.create_snake("bbbb", 8, new Vec3(0, 0, 3))
   }
 
@@ -199,7 +202,7 @@ export class SceneLv1 extends Scene {
     // }).start();
     this.snakes.push(snake)
 
-
+    snake.script.destroy("SnakeMove")
   }
 
   create_player(name = "", number = 2, position = new Vec3) {
@@ -217,14 +220,18 @@ export class SceneLv1 extends Scene {
       this.snakes.push(this.player)
       this.camera1.focus.objectFocus = this.player
     }
+    // this.node = 0
     // Tween.createCountTween({
     //   duration: 2,
     //   loop: true,
     //   repeat: 3,
     //   repeatDelay: 3,
     //   onRepeat: () => {
-    //     var num = Helper.randomFloor(1, 5)
-    //     this.player.cubeStack.spawnCube(Math.pow(2, num));
+    //     if (this.node < 4) {
+    //       var num = Helper.randomFloor(1, 5)
+    //       this.player.cubeStack.spawnCube(Math.pow(2, num));
+    //       this.node++
+    //     }
     //   },
     // }).start();
   }

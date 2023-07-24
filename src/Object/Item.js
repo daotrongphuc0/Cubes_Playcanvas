@@ -34,6 +34,13 @@ export class Item extends Entity {
         });
     }
 
+    reloadItem(type = 0) {
+        this.material.diffuseMap = AssetsLoader.getAssetByKey(assetsData[type].key).resource
+        this.type = assetsData[type].key
+        this.material.update()
+        this.model.meshInstances[0].material = this.material
+    }
+
     destroy() {
         super.destroy()
     }

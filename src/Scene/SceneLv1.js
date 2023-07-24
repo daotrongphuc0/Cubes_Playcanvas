@@ -14,42 +14,62 @@ import { Background } from "../Object/Background";
 import { Item } from "../Object/Item";
 import data from "../../assets/json/datalv1.json";
 import { PlayScreen } from "../ui/Screen/playScreen";
+import { SceneManager } from "./SceneManager";
+import { DirecVector } from "../scripts/move/direcVector";
+import { GameOverSreen } from "../ui/Screen/gameOverScreen";
 
 
 export class SceneLv1 extends Scene {
   constructor() {
     super(GameConstant.SCENE_TEST);
-    this.snakes = []
-    this.cubes = []
-    this.player = null
-    this.wall = []
   }
 
   create() {
     super.create();
     this.ui.addScreens(
-      new PlayScreen()
+      new PlayScreen(),
+      new GameOverSreen()
     );
     this.screenplay = this.ui.getScreen(GameConstant.SCREEN_PLAY);
     this.ui.setScreenActive(GameConstant.SCREEN_PLAY);
+    this._initLight();
+    this._initCamera();
     this._initialize();
   }
 
   _initialize() {
+    this.snakes = []
+    this.cubes = []
+    this.player = null
+    this.wall = []
+    this.cubesWaiting = []
     this._initInputBtSpeed();
     this._initInputBtMove();
-    this._initLight();
-    this._initCamera();
-    this._initBackground();
     this._initMap();
-    this._initPlayer();
-    // this.spawns()
+    this._initSnake();
+    this._initBackground();
+    this.spawns()
 
-    var newCube = new Cube(2)
+    var newCube = new Cube(2048)
     this.addChild(newCube)
 
     this.touchedDown = false;
     this.downPos = new Vec2()
+
+    Tween.createCountTween({
+      duration: 0.5,
+      loop: true,
+      repeatDelay: 0.5,
+      onRepeat: () => {
+        if (this.cubesWaiting.length > 0) {
+          var cube_tmp = this.cubesWaiting[0]
+          this.cubesWaiting.splice(0, 1)
+          this.spawn(cube_tmp)
+          this.addChild(cube_tmp)
+          this.cubes.push(cube_tmp)
+        }
+      },
+    }).start();
 
   }
 
@@ -140,15 +160,16 @@ export class SceneLv1 extends Scene {
     })
 
     data.items.list.forEach(element => {
-      var item = new Item(Helper.randomFloor(0, data.items.count),);
+      var item = new Item(Helper.randomFloor(0, data.items.count));
       item.setLocalPosition(element.position[0], 0.1, element.position[2])
       this.addChild(item)
     })
   }
 
-  _initPlayer() {
-    this.create_player("aaaa", 8, new Vec3(0, 0, -15))
-    this.create_snake("bbbb", 8, new Vec3(0, 0, 3))
+  _initSnake() {
+    this.create_player("aaaa", 2, new Vec3(0, 0, -15))
+    this.create_snake("bbbb", 2, new Vec3(10, 0, 3))
+    this.create_snake("cccc", 2, new Vec3(0, 0, -4))
   }
 
   _initCamera() {
@@ -181,7 +202,7 @@ export class SceneLv1 extends Scene {
   }
 
   create_snake(name = "", number, position = new Vec3) {
-    var snake = new Snake(name, number);
+    let snake = new Snake(name, number);
     this.addChild(snake);
     snake.setLocalPosition(position)
 
@@ -190,19 +211,28 @@ export class SceneLv1 extends Scene {
 
     snake.detectPositionChange = snake.addScript(DetectPositionChanged, {
       onPositionChanged: snake.cubeStack.enqueuePosition.bind(snake.cubeStack),
-      delta: 0.05,
+      delta: 0.1,
     });
+    snake.direcVector = snake.addScript(DirecVector, {
+      timeStepRandom: 6,
+      intelligent: 1,
+      timeUpdated: 0,
+    })
+    this.snakes.push(snake)
+    // this.numsssss = 0
     // Tween.createCountTween({
     //   duration: 2,
     //   loop: true,
     //   onRepeat: () => {
-    //     var num = Helper.randomFloor(1, 4)
-    //     snake.cubeStack.spawnCube(Math.pow(2, num));
+    //     if (this.numsssss < 4) {
+    //       snake.cubeStack.spawnCube(Math.pow(2, this.numsssss));
+    //       this.numsssss++
+    //     }
     //   },
     // }).start();
-    this.snakes.push(snake)
 
-    snake.script.destroy("SnakeMove")
+
+    // snake.script.destroy("SnakeMove")
   }
 
   create_player(name = "", number = 2, position = new Vec3) {
@@ -214,7 +244,7 @@ export class SceneLv1 extends Scene {
       this.addChild(this.player.cubeStack);
       this.player.detectPositionChange = this.player.addScript(DetectPositionChanged, {
         onPositionChanged: this.player.cubeStack.enqueuePosition.bind(this.player.cubeStack),
-        delta: 0.05,
+        delta: 0.1,
       });
 
       this.snakes.push(this.player)
@@ -236,6 +266,34 @@ export class SceneLv1 extends Scene {
     // }).start();
   }
 
+  snakeDie(snake) {
+    if (snake === this.player) {
+      this.ShowGameOver()
+      return
+    }
+    var i = 0;
+    for (i; i < this.snakes.length; i++) {
+      if (snake === this.snakes[i]) {
+        this.snakes.splice(i, 1)
+        snake.cubeStack.cubes.forEach(element => {
+          element.script.destroy("moveWithPath")
+          element.manager = null
+          SceneManager.currentScene.addChild(element)
+        })
+        var pos = snake.getLocalPosition()
+        var cubeReplace = new Cube(snake.number)
+        cubeReplace.setLocalPosition(pos.x, pos.y, pos.z)
+
+        SceneManager.currentScene.removeChild(snake)
+        snake.cubeStack.destroy()
+        snake.destroy()
+
+        SceneManager.currentScene.addChild(cubeReplace)
+        break;
+      }
+    }
+  }
+
 
 
   spawns() {
@@ -245,7 +303,6 @@ export class SceneLv1 extends Scene {
   }
 
   spawn(cube = new Cube(2)) {
-    console.log("spawn");
     var x = Helper.randomFloor(-data.background.size[0] / 2 - 1, data.background.size[0] / 2 - 1)
     var y = Helper.randomFloor(-data.background.size[1] / 2, data.background.size[1] / 2)
     var num = Helper.randomFloor(0, 4)
@@ -262,18 +319,41 @@ export class SceneLv1 extends Scene {
     this.cubes.push(cube)
   }
 
-  randomPosition(cube) {
-    var x = Helper.randomFloor(-data.background.size[0] / 2 - 1, data.background.size[0] / 2 - 1)
-    var y = Helper.randomFloor(-data.background.size[1] / 2, data.background.size[1] / 2)
-    var num = Helper.randomFloor(0, 4)
-    cube.setLocalPosition(x, 0, y)
-    this.wall.forEach(element => {
-      if (element.orientedBox.containsPoint(cube.getLocalPosition())) {
-        this.randomPosition(cube)
-        return;
+
+
+  pushCubeWait(cube) {
+    const index = this.cubes.findIndex((obj) => obj === cube);
+    if (index !== -1) {
+      this.cubes.splice(index, 1);
+      this.removeChild(cube)
+    }
+    cube.setLocalPosition(1000, 0, 1000)
+    this.cubesWaiting.push(cube)
+  }
+
+  reload() {
+    this.snakes.forEach(element => {
+      if (this.player != element) {
+        this.removeChild(element)
+        this.removeChild(element.cubeStack)
+        element.cubeStack.destroy()
+        element.destroy()
       }
     })
-    cube.updateChance(Math.pow(2, num))
+    this.gameOver = false
+    // this.player = null
+    this.snakes = []
+    this._initSnake()
+    this.ui.setScreenActive(GameConstant.SCREEN_GAME_OVER, false)
+    // this.screenplay = this.ui.getScreen(GameConstant.SCENE_PLAY);
+    this.ui.setScreenActive(GameConstant.SCENE_PLAY);
+  }
+
+  ShowGameOver() {
+    if (!this.gameOver) {
+      this.ui.setScreenActive(GameConstant.SCREEN_GAME_OVER, true)
+      this.ui.setScreenActive(GameConstant.SCENE_PLAY, false);
+    }
   }
 }
 

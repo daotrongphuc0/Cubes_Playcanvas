@@ -4,6 +4,7 @@ import { Cube } from "./cube";
 import { Time } from "../systems/time/time";
 import { Helper } from "../Helper/Helper";
 import { GameConstant } from "../GameConstant";
+import { CheckUpdateSnake } from "../scripts/checkUpdateSnake";
 
 
 export const CubeStackManagerEvent = Object.freeze({
@@ -23,6 +24,10 @@ export class CubeStackManager extends Entity {
       poolSize: 0,
       args: 16
     });
+    this._checkUpdateSnake = this.addScript(CheckUpdateSnake, {
+      timeCheck: 1.5,
+      isUpdate: false,
+    })
   }
 
   enqueuePosition(position) {
@@ -62,7 +67,7 @@ export class CubeStackManager extends Entity {
       i = 1
     }
     else {
-      while (i < this.cubes.length && this.cubes[i].number >= num) {
+      while (i < this.cubes.length && this.cubes[i].number >= num && this.cubes[i]?.number) {
         i++;
       }
       cubeAhead = this.cubes[i - 1];
@@ -80,24 +85,22 @@ export class CubeStackManager extends Entity {
       this.cubes.splice(i, 0, cube);
     }
     cube.setEulerAngles(cubeAhead.getEulerAngles());
-    let delayTime = isFirstCube ? 0.1 : cubeAhead.mover.delayTime + 0.1;
+    let delayTime = isFirstCube ? Helper.getScaleByNumber(this.cubes[0].number) * 0.1 + Helper.getScaleByNumber(this.player.number) * 0.1 : cubeAhead.mover.delayTime + 0.1;
     cube.reset(delayTime);
 
     for (i; i < this.cubes.length; i++) {
-      this.cubes[i].reset(this.cubes[i - 1].mover.delayTime + Helper.getScaleByNumber(this.cubes[i].number) / 2 + 0.1)
+      this.cubes[i].reset(this.cubes[i - 1].mover.delayTime + Helper.getScaleByNumber(this.cubes[i].number) * 0.2
+        + Helper.getScaleByNumber(this.cubes[i - 1].number) * 0.4)
     }
     if (isPlayerSpeedUp) {
       this.player.setSpeedIncrease(GameConstant.PLAYER_SPEED_UP)
     }
 
-    setTimeout(() => {
-      this.checkUpdateSnake()
-    }, 2000)
+    this._checkUpdateSnake.setUpdate(true)
     return cube;
   }
 
   checkUpdateSnake() {
-
     if (this.player.speedUp) {
       this.player.setSpeedReduce(GameConstant.PLAYER_SPEED)
       var isPlayerSpeedUp = true
@@ -107,51 +110,43 @@ export class CubeStackManager extends Entity {
     if (this.cubes[0] && this.player.number === this.cubes[0].number) {
       this.player.levelUp()
       this.cubes[0].destroy()
+      // this.spawner.despawn(this.cubes[0])
       this.cubes.splice(0, 1)
-      this.cubes[0].reset(0.2)
+      this.cubes[0]?.reset(Helper.getScaleByNumber(this.cubes[0].number) * 0.1
+        + Helper.getScaleByNumber(this.player.number) * 0.1)
       for (var i = 1; i < this.cubes.length; i++) {
-        this.cubes[i].reset(this.cubes[i].mover.delayTime + Helper.getScaleByNumber(this.cubes[i].number) / 2 + 0.1)
+        this.cubes[i].reset(this.cubes[i - 1].mover.delayTime + Helper.getScaleByNumber(this.cubes[i].number) * 0.4
+          + Helper.getScaleByNumber(this.cubes[i - 1].number) * 0.4)
       }
       x++
       isUpdate = true
     }
     for (x; x < this.cubes.length; x++) {
       if (this.cubes[x].number === this.cubes[x - 1].number) {
-        let delayTime = this.cubes[x - 1].mover.delayTime
         this.cubes[x - 1].levelUp()
         this.cubes[x].destroy()
+        // this.spawner.despawn(this.cubes[x])
         this.cubes.splice(x, 1)
 
         for (var i = x; i < this.cubes.length; i++) {
-          this.cubes[i].reset(delayTime + Helper.getScaleByNumber(this.cubes[i].number) + 0.005)
-          delayTime += Helper.getScaleByNumber(this.cubes[i].number) + 0.005
+          this.cubes[i].reset(this.cubes[i - 1].mover.delayTime + Helper.getScaleByNumber(this.cubes[i].number) / 2 + 0.1)
         }
-        x += 2
+        // x += 2
         isUpdate = true
+        // break;
       }
     }
     if (isPlayerSpeedUp) {
       this.player.setSpeedIncrease(GameConstant.PLAYER_SPEED_UP)
     }
     if (isUpdate) {
-      setTimeout(() => {
-        this.checkUpdateSnake()
-      }, 2000)
+      this._checkUpdateSnake.setUpdate(true)
+    } else {
+      this._checkUpdateSnake.setUpdate(false)
     }
   }
 
-  // sortUpdate() {
-  //   console.log("sort");
-  //   this.cubes = this.sortArrayDescending(this.cubes)
-  //   var delay = 0;
-  //   this.cubes.forEach(element => {
-  //     delay += 0.1
-  //     element.reset(delay)
-  //   });
-  // }
-
-  // sortArrayDescending(arr) {
-  //   arr.sort((a, b) => b.number - a.number);
-  //   return arr;
-  // }
+  destroy() {
+    super.destroy()
+  }
 }

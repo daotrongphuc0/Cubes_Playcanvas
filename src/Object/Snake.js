@@ -2,11 +2,12 @@ import { OrientedBox, Vec3 } from "playcanvas";
 import { Cube } from "./cube";
 import { GameConstant } from "../GameConstant";
 import { Helper } from "../Helper/Helper";
-import { SnakeMove } from "../scripts/moveObject/snakeMove";
+import { SnakeMove } from "../scripts/move/snakeMove";
 import { Wall } from "./Wall";
 import { Item } from "./Item";
 import { SceneManager } from "../Scene/SceneManager";
-import { MoveDueToColis } from "../scripts/MoveDueToColis";
+import { MoveDueToColis } from "../scripts/move/MoveDueToColis";
+import data from "../../assets/json/datalv1.json";
 
 
 export class Snake extends Cube {
@@ -43,17 +44,16 @@ export class Snake extends Cube {
       var otherEntity = result.other;
 
       if (otherEntity instanceof Wall) {
+        this.reverseDirection()
         return
       }
 
       if (otherEntity instanceof Item) {
-        console.log("Player va chạm với item");
         this.collisionItem(otherEntity)
         return
       }
 
       if (otherEntity instanceof Snake) {
-        console.log("Player va chạm với snake");
         this.collisionSnake(otherEntity)
         return;
       }
@@ -86,11 +86,15 @@ export class Snake extends Cube {
     });
     if (!isMyCube) {
       if (otherEntity.manager) {
-
+        if (otherEntity.number <= this.number) {
+          this.cutTail(otherEntity)
+        } else {
+          SceneManager.currentScene.snakeDie(this)
+        }
       } else {
         if (otherEntity.number <= this.number) {
           this.cubeStack.spawnCube(otherEntity.number)
-          SceneManager.currentScene.randomPosition(otherEntity)
+          SceneManager.currentScene.pushCubeWait(otherEntity)
         }
         else {
           otherEntity.collisionScript = otherEntity.addScript(MoveDueToColis, {
@@ -118,14 +122,17 @@ export class Snake extends Cube {
     }
 
     SceneManager.currentScene.removeChild(item);
-    item.destroy()
+    setTimeout(() => {
+      item.reloadItem(Helper.randomFloor(0, data.items.count))
+      SceneManager.currentScene.addChild(item);
+    }, 15000)
   }
 
   collisionSnake(snake) {
-    if (snake.number > this.number) {
-      console.log("game over");
-      return;
-    }
+    // if (snake.number > this.number) {
+    //   console.log("this die");
+    //   return;
+    // }
 
     if (snake.number === this.number) {
       this.move.setSnakeCollis(snake)
@@ -133,15 +140,30 @@ export class Snake extends Cube {
     }
 
     if (snake.number < this.number) {
-      console.log("eat");
+      SceneManager.currentScene.snakeDie(snake)
       return;
     }
 
   }
 
+  reverseDirection() {
+    this != SceneManager.currentScene.player && this.direcVector.reverseDirection()
+  }
+
   cutTail(cube) {
     if (!cube.manager) { return }
 
+    var cubess = cube.manager.cubes
+    for (var i = cubess.length - 1; i >= 0; i--) {
+      cubess[i].script.destroy("moveWithPath")
+      var tmp = cubess[i]
+      cubess[i].parent.removeChild(cubess[i])
+      tmp.destroy()
+      cubess.splice(i, 1)
+      if (cubess[i] === cube) {
+        break;
+      }
+    }
   }
 
   eatItemX2() {

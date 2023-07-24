@@ -1,5 +1,5 @@
 import { Color, Entity, StandardMaterial } from "playcanvas";
-import { MoveWithPath } from "../scripts/moveObject/moveWithPath";
+import { MoveWithPath } from "../scripts/move/moveWithPath";
 import { GameConstant } from "../GameConstant";
 import { AssetsLoader } from "../assets/AssetsLoader";
 import { Helper } from "../Helper/Helper";
@@ -84,14 +84,13 @@ export class Cube extends Entity {
       text: Helper.getStringByNumber(this.number),
       fontAsset: AssetsLoader.getAssetByKey("CanvasFont"),
       fontSize: 32,
-      pivot: new pc.Vec2(0.5, 0.5), // Đặt pivot ở vị trí trung tâm của Text Element
-      width: 200, // Điều chỉnh kích thước theo nhu cầu của bạn
+      pivot: new pc.Vec2(0.5, 0.5),
+      width: 200,
       height: 50,
-      anchor: new pc.Vec4(0.5, 0.5, 0.5, 0.5) // Đặt anchor ở vị trí trung tâm của Text Element
+      anchor: new pc.Vec4(0.5, 0.5, 0.5, 0.5)
     });
 
-    // Gắn Text Element vào Entity
-    this.textEntity.setLocalPosition(0, 2, -0.02); // Đặt vị trí của Text Element trong hình hộp
+    this.textEntity.setLocalPosition(0, 2, -0.02);
     this.textEntity.setLocalEulerAngles(-90, -90, 0)
     this.textEntity.setLocalScale(0.023, 0.023, 0.023);
     this.addChild(this.textEntity);
@@ -105,10 +104,6 @@ export class Cube extends Entity {
     this.material.diffuse = Helper.getColorByNumber(this.number);
     this.material.update()
     this.model.meshInstances[0].material = this.material
-  }
-
-  destroy() {
-    super.destroy()
   }
 
   speedIncrease(speed) {

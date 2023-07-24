@@ -74,5 +74,9 @@ export class Helper {
         return pi * 180 / Math.PI
     }
 
+    static sumTwoVector(vec1, vec2) {
+        return new pc.Vec3().add2(vec1, vec2).normalize()
+    }
+
 
 }

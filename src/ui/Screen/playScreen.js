@@ -4,6 +4,7 @@ import { UIScreen } from "../UIScreen"
 import { ButtonSpeed } from "../ui/buttonSpeed";
 import { ButtonMove } from "../ui/buttonMove";
 import { BgButtonMove } from "../ui/bg_buttonMove";
+import { SceneManager } from "../../Scene/SceneManager";
 
 
 export class PlayScreen extends UIScreen {
@@ -34,6 +35,29 @@ export class PlayScreen extends UIScreen {
       margin: new Vec4(),
     });
     this.addChild(this.BgbtMove);
+
+    // this._initInputBtMove();
+  }
+
+  // _initInputBtMove() {
+  //   this.BgbtMove.element.on('mousedown', this.onBtMoveDown, this)
+  //   this.BgbtMove.element.on('mousemove', this.onBtMoveMove, this)
+  //   this.BgbtMove.element.on('mouseup', this.onBtMoveUp, this)
+  //   this.BgbtMove.element.on('touchstart', this.onBtMoveDown, this)
+  //   this.BgbtMove.element.on('touchmove', this.onBtMoveMove, this)
+  //   this.BgbtMove.element.on('touchend', this.onBtMoveUp, this)
+  // }
+
+  onBtMoveDown(event) {
+    SceneManager.currentScene.onBtMoveDown(event)
+  }
+
+  onBtMoveMove(event) {
+    SceneManager.currentScene.onBtMoveMove(event)
+  }
+
+  onBtMoveUp(event) {
+    SceneManager.currentScene.onBtMoveUp(event)
   }
 
   setMove(vector) {

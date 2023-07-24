@@ -1,4 +1,4 @@
-import { Vec3, Color } from "playcanvas";
+import { Vec3, Color, DISTANCE_EXPONENTIAL } from "playcanvas";
 
 export const GameConstant = Object.freeze({
     GAME_WIDTH: 1280,
@@ -13,7 +13,7 @@ export const GameConstant = Object.freeze({
     SCENE_PLAY: "PlayScene",
     SCENE_TEST: "TestScene",
 
-    SCREEN_HOME: "SelectCarScreen",
+    SCREEN_GAME_OVER: "GameOverScreen",
     SCREEN_PLAY: "PlayScreen",
 
     PLAYER_SPEED: 3,
@@ -35,5 +35,7 @@ export const GameConstant = Object.freeze({
 
     SIZE_WALL_AROUND: 5,
 
-    LIMIT_TIME_POS_QUEUE: 10
+    LIMIT_TIME_POS_QUEUE: 10,
+
+    DISTANCE_SNAKE_REGIME: 12
 });

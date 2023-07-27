@@ -118,17 +118,16 @@ export const DirecVector = Script.createScript({
 
   findBait() {
     var distanceMin = 10000000;
-    console.log("find bait");
     for (var i = 0; i < SceneManager.currentScene.cubes.length; i++) {
-      if (SceneManager.currentScene.cubes[i].manager) {
+      if (SceneManager.currentScene.cubes[i].manager || SceneManager.currentScene.cubes[i].number > this.entity.number) {
         continue;
       }
 
       var distance = Helper.getDistance3D(this.entity.getLocalPosition(), SceneManager.currentScene.cubes[i].getLocalPosition())
-      if (distance < GameConstant.DISTANCE_SNAKE_REGIME && distance < distanceMin) {
+      if (distance < 8 && distance < distanceMin) {
         this.targetVector = Helper.getVectorAngle(this.entity.getLocalPosition(), SceneManager.currentScene.cubes[i].getLocalPosition())
         this.timeAI = Time.get_timeGame()
-        this.stepTimeAI = distance + 0.5
+        this.stepTimeAI = 3
         return;
       }
     }
@@ -143,7 +142,5 @@ export const DirecVector = Script.createScript({
         this.getRandomVector())
     }
     this.timeregime = Time.get_timeGame()
-
   }
-
 }) 

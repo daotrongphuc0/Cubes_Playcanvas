@@ -24,8 +24,10 @@ export class Snake extends Cube {
     this.orientedBox.halfExtents.x += expandAmount;
     this.orientedBox.halfExtents.z += expandAmount;
 
-
     this.speedUp = false
+    this.eatItemSpeedUp = false
+    this.timeSpeedUp = GameConstant.TIME_SPEED_UP
+    this.pressButtonSpeed = false
 
     this.move = this.addScript(SnakeMove, {
       speed: GameConstant.PLAYER_SPEED,
@@ -57,6 +59,7 @@ export class Snake extends Cube {
         this.collisionSnake(otherEntity)
         return;
       }
+
       if (otherEntity instanceof Cube) {
         this.collisionCube(otherEntity)
         return;
@@ -84,10 +87,12 @@ export class Snake extends Cube {
         isMyCube = true;
       }
     });
+
     if (!isMyCube) {
       if (otherEntity.manager) {
         if (otherEntity.number <= this.number) {
           this.cutTail(otherEntity)
+          this.cubeStack.spawnCube(otherEntity.number)
         } else {
           SceneManager.currentScene.snakeDie(this)
         }
@@ -115,9 +120,13 @@ export class Snake extends Cube {
     }
 
     if (item.type == "itemspeed") {
-      this.setSpeedIncrease(GameConstant.PLAYER_SPEED_UP + 2)
+      this.eatItemSpeedUp = true
+      this.setSpeedIncrease(GameConstant.PLAYER_SPEED_UP + 1)
+
       setTimeout(() => {
+        this.eatItemSpeedUp = false
         this.setSpeedReduce(GameConstant.PLAYER_SPEED)
+
       }, 4000)
     }
 
@@ -129,10 +138,6 @@ export class Snake extends Cube {
   }
 
   collisionSnake(snake) {
-    // if (snake.number > this.number) {
-    //   console.log("this die");
-    //   return;
-    // }
 
     if (snake.number === this.number) {
       this.move.setSnakeCollis(snake)
@@ -143,7 +148,6 @@ export class Snake extends Cube {
       SceneManager.currentScene.snakeDie(snake)
       return;
     }
-
   }
 
   reverseDirection() {
@@ -188,6 +192,20 @@ export class Snake extends Cube {
       this.cubeStack.cubes.forEach(element => {
         element.speedIncrease(speed)
       });
+    }
+  }
+
+  activeAcceleration(speed) {
+    if (this.timeSpeedUp > 1 && !this.eatItemSpeedUp && !this.pressButtonSpeed) {
+      this.pressButtonSpeed = true
+      this.setSpeedIncrease(speed)
+    }
+  }
+
+  activeDeceleration(speed) {
+    if (!this.eatItemSpeedUp && this.pressButtonSpeed) {
+      this.pressButtonSpeed = false
+      this.setSpeedReduce(speed)
     }
   }
 

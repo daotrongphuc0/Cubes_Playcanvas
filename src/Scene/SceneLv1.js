@@ -43,8 +43,8 @@ export class SceneLv1 extends Scene {
     this.player = null
     this.wall = []
     this.cubesWaiting = []
-    this._initInputBtSpeed();
-    this._initInputBtMove();
+    this.isPause = true
+    this.pressEsc = false
     this._initMap();
     this._initSnake();
     this._initBackground();
@@ -53,10 +53,7 @@ export class SceneLv1 extends Scene {
     var newCube = new Cube(2048)
     this.addChild(newCube)
 
-    this.touchedDown = false;
-    this.downPos = new Vec2()
-
-    Tween.createCountTween({
+    this.tweenSpawn = Tween.createCountTween({
       duration: 0.5,
       loop: true,
       repeatDelay: 0.5,
@@ -290,8 +287,6 @@ export class SceneLv1 extends Scene {
       }
     }
   }
-
-
 
   spawns() {
     for (var i = this.cubes.length; i < data.cube.count; i++) {

@@ -68,8 +68,10 @@ export class SceneLv1 extends Scene {
           this.addChild(cube_tmp)
           this.cubes.push(cube_tmp)
         }
+
+        console.log("twen");
       },
-    }).start();
+    });
 
   }
 

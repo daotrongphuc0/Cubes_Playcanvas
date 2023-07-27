@@ -167,9 +167,13 @@ export class SceneLv1 extends Scene {
   }
 
   _initSnake() {
-    this.create_player("aaaa", 2, new Vec3(0, 0, -15))
+    this.create_player("aaaa", 8, new Vec3(0, 0, -15))
     this.create_snake("bbbb", 2, new Vec3(10, 0, 3))
-    this.create_snake("cccc", 2, new Vec3(0, 0, -4))
+    this.create_snake("cccc", 256, new Vec3(-6, 0, -3))
+    this.create_snake("dddd", 1024, new Vec3(-45, 0, -45))
+    this.create_snake("eeee", 2048, new Vec3(40, 0, 40))
+    this.create_snake("ffff", 1024, new Vec3(35, 0, -35))
+    this.create_snake("gggg", 2048, new Vec3(-35, 0, 35))
   }
 
   _initCamera() {

@@ -58,10 +58,6 @@ export class Util {
     return out;
   }
 
-  static distanceBetween(a, b) {
-    return Math.abs(Math.abs(a) - Math.abs(b));
-  }
-
   /**
    * @returns Angle of vector in degree
    */
@@ -80,55 +76,8 @@ export class Util {
     return degree * Math.PI / 180;
   }
 
-  /**
-   * Return a random integer between min (inclusive), max (inclusive)
-   * and not include 'excludeNumber'.
-   * Note: the 'excludeNumber' must be >= min and <= max value,
-   * if not, the probality may be incorect
-   * Using Math.round() will give you a non-uniform distribution!
-   * @param {number} min min number
-   * @param {number} max max number (inclusive)
-   * @param {number} excludeNumber the number not included in result
-   * @returns {number} Random number
-   */
-  static getRandomIntExclude(min, max, excludeNumber) {
-    var rand = Math.floor(Math.random() * (max - min)) + min;
-    if (rand === excludeNumber) {
-      rand = max;
-    }
-    return rand;
-  }
-
-  /**
-   * @summary Return first frame
-   * @param {pc.Sprite} sprite
-   */
-  static getSpriteFrame(sprite, scale = 1) {
-    let rect = sprite.atlas.frames[sprite.frameKeys[0]].rect;
-    return { x: rect.x, y: rect.y, width: rect.z * scale, height: rect.w * scale };
-  }
-
-  static getSpriteAtlasFrame(sprite) {
-    return sprite.atlas.frames[sprite.frameKeys[0]];
-  }
-
-  static getSpriteWorldSize(sprite) {
-    let atlasFrame = this.getSpriteAtlasFrame(sprite);
-    return {
-      width: atlasFrame.rect.z / sprite.pixelsPerUnit,
-      height: atlasFrame.rect.w / sprite.pixelsPerUnit,
-    };
-  }
-
   static createColor(r = 255, g = 255, b = 255, a = 1) {
     return new Color(r / 255, g / 255, b / 255, a);
-  }
-
-  static setSpriteDepthTest(sprite, depthTest = true) {
-    let mat = sprite._meshInstance.material.clone();
-    mat.depthTest = depthTest;
-    mat.update();
-    sprite._meshInstance.material = mat;
   }
 
   static setUpEffectModel(entity) {
@@ -148,10 +97,6 @@ export class Util {
     entity.model.meshInstances[index].material = material;
   }
 
-  static registerCTA(element, name) {
-    this.registerOnTouch(element, () => Game.onCTAClick(name));
-  }
-
   static registerOnTouch(element, callback, scope) {
     element.useInput = true;
     element.on("mousedown", callback, scope);
@@ -162,38 +107,5 @@ export class Util {
     element.useInput = true;
     element.once("mousedown", callback, scope);
     element.once("touchstart", callback, scope);
-  }
-
-  static updateCircleTransform(entity, radius, centerY, rotateMultiplier) {
-    let pos = entity.getLocalPosition();
-
-    // calculate y in equation: (x-a)^2 + (y-b)^2 = r^2
-    let x = pos.x;
-    // let radius = GameConstant.PLAYER_MOVE_RADIUS;
-    let squaredR = radius ** 2;
-    let squredX = x ** 2;
-    let y = Math.sqrt(squaredR + squredX) + centerY;
-    pos.y = y;
-    entity.setLocalPosition(pos);
-
-    let rotation = entity.getLocalEulerAngles();
-    let axis = Util.sign(pos.x);
-    let distanceY = Math.abs(y - centerY);
-    let alpha = Math.atan(distanceY / Math.abs(x)) * 180 / Math.PI;
-    rotation.z = -axis * (alpha - 90) * rotateMultiplier;
-    entity.setLocalEulerAngles(rotation);
-  }
-
-  static getCashFormat(num) {
-    if (num >= 1000000000) {
-      return `${(num / 1000000000).toFixed(1).replace(/\.0$/, "")}B`;
-    }
-    if (num >= 1000000) {
-      return `${(num / 1000000).toFixed(1).replace(/\.0$/, "")}M`;
-    }
-    if (num >= 1000) {
-      return `${(num / 1000).toFixed(1).replace(/\.0$/, "")}K`;
-    }
-    return num;
   }
 }

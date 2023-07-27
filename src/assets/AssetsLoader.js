@@ -16,6 +16,7 @@ export class AssetsLoader {
             this.assets,
             this.app.assets
         );
+        this.createCanvasFont("Arial", 106, "bold");
         this.assetListLoader.load((err) => {
             if (err) {
                 console.log("false to load")

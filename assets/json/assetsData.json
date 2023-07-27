@@ -58,5 +58,20 @@
         "key": "box",
         "url": "assets/model/cube.glb",
         "type": "model"
+    },
+    {
+        "key": "eatsound",
+        "url": "assets/sounds/eat.wav",
+        "type": "audio"
+    },
+    {
+        "key": "gamesound",
+        "url": "assets/sounds/game.mp3",
+        "type": "audio"
+    },
+    {
+        "key": "homesound",
+        "url": "assets/sounds/home.mp3",
+        "type": "audio"
     }
 ]

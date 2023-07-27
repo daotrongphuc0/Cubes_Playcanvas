@@ -4,6 +4,7 @@ import { Time } from "../../systems/time/time";
 import { Helper } from "../../Helper/Helper";
 import * as pc from "playcanvas"
 import { SceneManager } from "../../Scene/SceneManager";
+import { GameConstant } from "../../GameConstant";
 
 export const SnakeMove = Script.createScript({
   name: "SnakeMove",
@@ -17,6 +18,7 @@ export const SnakeMove = Script.createScript({
   snakeColliston: null,
 
   update() {
+    this.calTimeSpeedUp()
     var direction = this.vector
     var xMovement = direction.x * this.speed * Time.dt;
     var zMovement = direction.z * this.speed * Time.dt;
@@ -81,7 +83,7 @@ export const SnakeMove = Script.createScript({
   },
 
   setVector(vec) {
-    this.vector = vec;
+    this.vector = new Vec3().copy(vec)
   },
 
   getVector() {
@@ -89,6 +91,22 @@ export const SnakeMove = Script.createScript({
   },
   setSpeed(speed) {
     this.speed = speed
+  },
+
+  calTimeSpeedUp() {
+    if (!this.entity.eatItemSpeedUp) {
+      if (this.entity.speedUp) {
+        this.entity.timeSpeedUp -= Time.dt
+        if (this.entity.timeSpeedUp < 0) {
+          this.entity.timeSpeedUp = 0
+          this.entity.setSpeedReduce(GameConstant.PLAYER_SPEED)
+        }
+      }
+    }
+    if (!this.entity.speedUp || this.entity.eatItemSpeedUp) {
+      this.entity.timeSpeedUp += Time.dt / 2
+      this.entity.timeSpeedUp = Math.min(this.entity.timeSpeedUp, GameConstant.TIME_SPEED_UP)
+    }
   }
 
 });

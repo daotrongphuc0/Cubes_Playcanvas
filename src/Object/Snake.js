@@ -8,6 +8,7 @@ import { Item } from "./Item";
 import { SceneManager } from "../Scene/SceneManager";
 import { MoveDueToColis } from "../scripts/move/MoveDueToColis";
 import data from "../../assets/json/datalv1.json";
+import { Audio } from "../systems/sound/Audio";
 
 
 export class Snake extends Cube {
@@ -28,6 +29,8 @@ export class Snake extends Cube {
     this.eatItemSpeedUp = false
     this.timeSpeedUp = GameConstant.TIME_SPEED_UP
     this.pressButtonSpeed = false
+
+    Audio._initAudio(this)
 
     this.move = this.addScript(SnakeMove, {
       speed: GameConstant.PLAYER_SPEED,
@@ -93,12 +96,14 @@ export class Snake extends Cube {
         if (otherEntity.number <= this.number) {
           this.cutTail(otherEntity)
           this.cubeStack.spawnCube(otherEntity.number)
+          this.soundEat?.playSoundEat()
         } else {
           SceneManager.currentScene.snakeDie(this)
         }
       } else {
         if (otherEntity.number <= this.number) {
           this.cubeStack.spawnCube(otherEntity.number)
+          this.soundEat?.playSoundEat()
           SceneManager.currentScene.pushCubeWait(otherEntity)
         }
         else {
@@ -138,13 +143,13 @@ export class Snake extends Cube {
   }
 
   collisionSnake(snake) {
-
     if (snake.number === this.number) {
       this.move.setSnakeCollis(snake)
       return;
     }
 
     if (snake.number < this.number) {
+      this.soundEat?.playSoundEat()
       SceneManager.currentScene.snakeDie(snake)
       return;
     }

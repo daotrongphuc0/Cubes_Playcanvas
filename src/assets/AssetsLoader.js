@@ -6,11 +6,15 @@ export class AssetsLoader {
     static loadAssets(app) {
         this.app = app
         this.assets = []
+        this.sounds = []
         assetsData.forEach(element => {
             let asset = new pc.Asset(element.key, element.type, {
                 url: element.url,
             });
             this.assets.push(asset);
+            if (element.type === "audio") {
+                this.sounds.push(asset)
+            }
         });
         this.assetListLoader = new pc.AssetListLoader(
             this.assets,

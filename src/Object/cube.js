@@ -23,7 +23,6 @@ export class Cube extends Entity {
     });
 
     this.manager = null
-    // this.moveDueToColis =  this.addScript()
 
     this.activeMove(false);
     this.updateScale();

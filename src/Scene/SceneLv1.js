@@ -221,8 +221,8 @@ export class SceneLv1 extends Scene {
     //   duration: 2,
     //   loop: true,
     //   onRepeat: () => {
-    //     if (this.numsssss < 4) {
-    //       snake.cubeStack.spawnCube(Math.pow(2, this.numsssss));
+    //     if (this.numsssss < 40) {
+    //       snake.cubeStack.spawnCube(Math.pow(2, 4));
     //       this.numsssss++
     //     }
     //   },
@@ -280,8 +280,9 @@ export class SceneLv1 extends Scene {
         var pos = snake.getLocalPosition()
         var cubeReplace = new Cube(snake.number)
         cubeReplace.setLocalPosition(pos.x, pos.y, pos.z)
-
-        SceneManager.currentScene.removeChild(snake)
+        var num = Math.log2(this.player.number) + Helper.randomFloor(-1, 2)
+        this.removeChild(snake)
+        this.create_snake(snake.name, Math.pow(2, num), this.randomPos())
         snake.cubeStack.destroy()
         snake.destroy()
 

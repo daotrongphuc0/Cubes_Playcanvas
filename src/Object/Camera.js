@@ -16,19 +16,21 @@ export class Camera extends pc.Entity {
         this.setLocalPosition(GameConstant.DEFAULT_LOCATION_CAMERA)
         this.setLocalEulerAngles(0, -90, -65);
 
-        // this.addComponent("script");
-        // this.script.create("orbitCamera", {
-        //     attributes: {
-        //         inertiaFactor: 0.1, // Override default of 0 (no inertia)
-        //         distanceMax: 150,
-        //         distanceMin: 20,
-        //         pitchAngleMax: 90,
-        //         pitchAngleMin: -90,
-        //         focusEntity: null,
-        //         frameOnStart: true
-        //     },
-        // });
-        // this.script.create("orbitCameraInputMouse");
-        // this.script.create("orbitCameraInputTouch");
+        if (GameConstant.DEBUG_CAMERA) {
+            this.addComponent("script");
+            this.script.create("orbitCamera", {
+                attributes: {
+                    inertiaFactor: 0.1, // Override default of 0 (no inertia)
+                    distanceMax: 150,
+                    distanceMin: 20,
+                    pitchAngleMax: 90,
+                    pitchAngleMin: -90,
+                    focusEntity: null,
+                    frameOnStart: true
+                },
+            });
+            this.script.create("orbitCameraInputMouse");
+            this.script.create("orbitCameraInputTouch");
+        }
     }
 }

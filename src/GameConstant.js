@@ -3,8 +3,7 @@ import { Vec3, Color, DISTANCE_EXPONENTIAL } from "playcanvas";
 export const GameConstant = Object.freeze({
     GAME_WIDTH: 1280,
     GAME_HEIGHT: 720,
-    DEBUG_ON: false,
-    DEBUG_CAMERA: true,
+    DEBUG_CAMERA: false,
 
     PLATFORM_ANDROID: "android",
     PLATFORM_IOS: "ios",

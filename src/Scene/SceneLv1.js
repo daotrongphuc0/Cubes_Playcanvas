@@ -269,7 +269,7 @@ export class SceneLv1 extends Scene {
   snakeDie(snake) {
     if (snake === this.player) {
       this.ShowGameOver()
-      return
+      this.ui.getScreen(GameConstant.SCREEN_GAME_OVER).updateTextScore(this.player.number)
     }
     var i = 0;
     for (i; i < this.snakes.length; i++) {

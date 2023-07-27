@@ -1,7 +1,6 @@
 import { Application, ElementInput, Keyboard, Mouse, TouchDevice, WasmModule, RESOLUTION_AUTO, FILLMODE_FILL_WINDOW } from "playcanvas";
 import { AssetsLoader } from "./assets/AssetsLoader";
 import { loadObitCameraPlugin } from "../src/orbit-camera";
-import { ScenePlay } from "./Scene/ScenePlay";
 import { SceneManager } from "./Scene/SceneManager";
 import { InputManager } from "./systems/input/inputManager"
 import { Time } from "./systems/time/time"
@@ -43,7 +42,6 @@ export class Game {
             });
         });
 
-        // Đưa scene vào trong DOM
         document.body.appendChild(this.app.graphicsDevice.canvas);
     }
 
@@ -63,10 +61,9 @@ export class Game {
         this.app.graphicsDevice.maxPixelRatio = window.devicePixelRatio;
         this.app.resizeCanvas(this.width, this.height);
         SceneManager.init([
-            new ScenePlay(),
             new SceneLv1(),
         ]);
-        SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_TEST));
+        SceneManager.loadScene(SceneManager.getScene(GameConstant.SCENE_PLAY));
     }
 
     static update(dt) {

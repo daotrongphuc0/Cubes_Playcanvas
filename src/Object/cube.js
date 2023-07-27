@@ -78,7 +78,6 @@ export class Cube extends Entity {
   }
 
   initText() {
-    AssetsLoader.createCanvasFont("Arial", 106, "bold");
     this.textEntity.addComponent("element", {
       type: "text",
       text: Helper.getStringByNumber(this.number),

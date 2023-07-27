@@ -12,7 +12,7 @@ export class Scene extends Entity {
 
     create() {
         // Debug.log(`${this.key}Scene`, "Create");
-        console.log(`${this.key}Scene Create`);
+        console.log(`${this.key} Create`);
     }
 
     update() {

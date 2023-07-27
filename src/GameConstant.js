@@ -8,15 +8,16 @@ export const GameConstant = Object.freeze({
     PLATFORM_ANDROID: "android",
     PLATFORM_IOS: "ios",
 
-    SCENE_HOME: "SelectScene",
     SCENE_PLAY: "PlayScene",
-    SCENE_TEST: "TestScene",
 
     SCREEN_GAME_OVER: "GameOverScreen",
     SCREEN_PLAY: "PlayScreen",
+    SCREEN_START: "StartScreen",
+    SCREEN_PAUSE: "PauseScreen",
 
     PLAYER_SPEED: 3,
     PLAYER_SPEED_UP: 5,
+    TIME_SPEED_UP: 5,
     RATE_DELAYTIME: 1.7,
 
     DEFAULT_SCALE_BOX_MIN: 0.5,

@@ -16,22 +16,25 @@ import data from "../../assets/json/datalv1.json";
 import { PlayScreen } from "../ui/Screen/playScreen";
 import { SceneManager } from "./SceneManager";
 import { DirecVector } from "../scripts/move/direcVector";
-import { GameOverSreen } from "../ui/Screen/gameOverScreen";
+import { KilledScreen } from "../ui/Screen/killedScreen";
+import { StartScreen } from "../ui/Screen/startScreen";
+import { PauseScreen } from "../ui/Screen/pauseScreen";
 
 
 export class SceneLv1 extends Scene {
   constructor() {
-    super(GameConstant.SCENE_TEST);
+    super(GameConstant.SCENE_PLAY);
   }
 
   create() {
     super.create();
     this.ui.addScreens(
       new PlayScreen(),
-      new GameOverSreen()
+      new KilledScreen(),
+      new StartScreen(),
+      new PauseScreen()
     );
-    this.screenplay = this.ui.getScreen(GameConstant.SCREEN_PLAY);
-    this.ui.setScreenActive(GameConstant.SCREEN_PLAY);
+    this.ShowStart()
     this._initLight();
     this._initCamera();
     this._initialize();
@@ -323,29 +326,56 @@ export class SceneLv1 extends Scene {
     this.cubesWaiting.push(cube)
   }
 
-  reload() {
-    this.snakes.forEach(element => {
-      if (this.player != element) {
-        this.removeChild(element)
-        this.removeChild(element.cubeStack)
-        element.cubeStack.destroy()
-        element.destroy()
+  reloadGame() {
+    this.ui.setScreenActive(GameConstant.SCREEN_PLAY);
+    this.ui.setScreenActive(GameConstant.SCREEN_GAME_OVER, false)
+    for (var i = 0; i < this.snakes.length; i++) {
+      for (var j = this.snakes[i].cubeStack.cubes.length - 1; j >= 0; j--) {
+        this.snakes[i].cubeStack.positionQueue = []
+        this.snakes[i].cubeStack.spawner.despawn(this.snakes[i].cubeStack.cubes[j])
+        this.snakes[i].cubeStack.cubes.splice(j, 1)
+      }
+      // var pos = this.randomPos()
+      // var num = Helper.randomFloor(1, 4)
+      // this.snakes[i].setLocalPosition(pos.x, 0, pos.y)
+      // this.snakes[i].updateChance(Math.pow(2, num))
+      this.removeChild(this.snakes[i])
+      this.snakes[i].destroy()
+    }
+    this.player = null
+    this._initSnake()
+  }
+
+  randomPos() {
+    var x = Helper.randomFloor(-data.background.size[0] / 2 - 1, data.background.size[0] / 2 - 1)
+    var y = Helper.randomFloor(-data.background.size[1] / 2, data.background.size[1] / 2)
+    this.wall.forEach(element => {
+      if (element.orientedBox.containsPoint(new Vec3(x, 0, y))) {
+        return this.randomPos()
       }
     })
-    this.gameOver = false
-    // this.player = null
-    this.snakes = []
-    this._initSnake()
-    this.ui.setScreenActive(GameConstant.SCREEN_GAME_OVER, false)
-    // this.screenplay = this.ui.getScreen(GameConstant.SCENE_PLAY);
-    this.ui.setScreenActive(GameConstant.SCENE_PLAY);
+    return new Vec3(x, 0, y)
+
   }
 
   ShowGameOver() {
-    if (!this.gameOver) {
-      this.ui.setScreenActive(GameConstant.SCREEN_GAME_OVER, true)
-      this.ui.setScreenActive(GameConstant.SCENE_PLAY, false);
-    }
+    this.ui.disableAllScreens();
+    this.ui.setScreenActive(GameConstant.SCREEN_GAME_OVER)
+  }
+
+  ShowGamePlay() {
+    this.ui.disableAllScreens();
+    this.ui.setScreenActive(GameConstant.SCREEN_PLAY)
+  }
+
+  ShowStart() {
+    this.ui.disableAllScreens();
+    this.ui.setScreenActive(GameConstant.SCREEN_START)
+  }
+
+  ShowGamePause() {
+    this.ui.disableAllScreens();
+    this.ui.setScreenActive(GameConstant.SCREEN_PAUSE)
   }
 }
 

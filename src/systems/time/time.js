@@ -1,3 +1,5 @@
+import { SceneManager } from "../../Scene/SceneManager";
+
 export class Time {
   static init(app) {
     this._current = 0;
@@ -9,7 +11,11 @@ export class Time {
   }
 
   static update(dt) {
-    this._dt = dt * this.scale;
+    if (!SceneManager.currentScene?.isPause) {
+      this._dt = dt * this.scale;
+    } else {
+      this._dt = 0
+    }
     this._current += this._dt;
     this.time_game += this._dt;
   }

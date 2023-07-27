@@ -19,6 +19,9 @@ import { DirecVector } from "../scripts/move/direcVector";
 import { KilledScreen } from "../ui/Screen/killedScreen";
 import { StartScreen } from "../ui/Screen/startScreen";
 import { PauseScreen } from "../ui/Screen/pauseScreen";
+import { Audio } from "../systems/sound/Audio";
+import { SoundEat } from "../scripts/soundEat";
+import { SpawningEvent } from "../scripts/spawningEvent";
 
 
 export class SceneLv1 extends Scene {
@@ -38,6 +41,11 @@ export class SceneLv1 extends Scene {
     this._initLight();
     this._initCamera();
     this._initialize();
+
+    Audio._initAudio(this)
+    this.sound.play("homesound")
+
+
   }
 
   _initialize() {
@@ -68,8 +76,6 @@ export class SceneLv1 extends Scene {
           this.addChild(cube_tmp)
           this.cubes.push(cube_tmp)
         }
-
-        console.log("twen");
       },
     });
 
@@ -160,9 +166,11 @@ export class SceneLv1 extends Scene {
   }
 
   _initSnake() {
-    this.create_player("aaaa", 8, new Vec3(0, 0, -15))
-    this.create_snake("bbbb", 2, new Vec3(10, 0, 3))
-    this.create_snake("cccc", 256, new Vec3(-6, 0, -3))
+    this.create_player("aaaa", 4086, new Vec3(0, 0, -15))
+    this.create_snake("bbbb", 2, new Vec3(15, 0, 0))
+    this.create_snake("hhhh", 256, new Vec3(-15, 0, 0))
+    this.create_snake("iiii", 2, new Vec3(0, 0, 15))
+    this.create_snake("cccc", 256, new Vec3(0, 0, -15))
     this.create_snake("dddd", 1024, new Vec3(-45, 0, -45))
     this.create_snake("eeee", 2048, new Vec3(40, 0, 40))
     this.create_snake("ffff", 1024, new Vec3(35, 0, -35))
@@ -216,20 +224,6 @@ export class SceneLv1 extends Scene {
       timeUpdated: 0,
     })
     this.snakes.push(snake)
-    // this.numsssss = 0
-    // Tween.createCountTween({
-    //   duration: 2,
-    //   loop: true,
-    //   onRepeat: () => {
-    //     if (this.numsssss < 40) {
-    //       snake.cubeStack.spawnCube(Math.pow(2, 4));
-    //       this.numsssss++
-    //     }
-    //   },
-    // }).start();
-
-
-    // snake.script.destroy("SnakeMove")
   }
 
   create_player(name = "", number = 2, position = new Vec3) {
@@ -246,21 +240,9 @@ export class SceneLv1 extends Scene {
 
       this.snakes.push(this.player)
       this.camera1.focus.objectFocus = this.player
+
+      this.player.soundEat = this.player.addScript(SoundEat, {})
     }
-    // this.node = 0
-    // Tween.createCountTween({
-    //   duration: 2,
-    //   loop: true,
-    //   repeat: 3,
-    //   repeatDelay: 3,
-    //   onRepeat: () => {
-    //     if (this.node < 4) {
-    //       var num = Helper.randomFloor(1, 5)
-    //       this.player.cubeStack.spawnCube(Math.pow(2, num));
-    //       this.node++
-    //     }
-    //   },
-    // }).start();
   }
 
   snakeDie(snake) {
@@ -315,8 +297,6 @@ export class SceneLv1 extends Scene {
     this.cubes.push(cube)
   }
 
-
-
   pushCubeWait(cube) {
     const index = this.cubes.findIndex((obj) => obj === cube);
     if (index !== -1) {
@@ -347,15 +327,15 @@ export class SceneLv1 extends Scene {
     this._initSnake()
   }
 
-  randomPos() {
-    var x = Helper.randomFloor(-data.background.size[0] / 2 - 1, data.background.size[0] / 2 - 1)
-    var y = Helper.randomFloor(-data.background.size[1] / 2, data.background.size[1] / 2)
+  randomPos(vec3 = new Vec3()) {
+    vec3.x = Helper.randomFloor(-data.background.size[0] / 2 - 5, data.background.size[0] / 2 - 5)
+    vec3.z = Helper.randomFloor(-data.background.size[1] / 2 - 5, data.background.size[1] / 2 - 5)
     this.wall.forEach(element => {
-      if (element.orientedBox.containsPoint(new Vec3(x, 0, y))) {
+      if (element.orientedBox.containsPoint(vec3)) {
         return this.randomPos()
       }
     })
-    return new Vec3(x, 0, y)
+    return vec3
 
   }
 

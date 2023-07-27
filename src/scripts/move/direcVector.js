@@ -14,10 +14,8 @@ export const DirecVector = Script.createScript({
     intelligent: { default: 1 },
     timeUpdated: { default: 0 },
     speed: { default: 2 },
-
-
   },
-
+  reverse: false,
   timeAI: 0,
   stepTimeAI: 2,
   targetVector: new Vec3(),
@@ -67,16 +65,25 @@ export const DirecVector = Script.createScript({
   },
 
   reverseDirection() {
-    this.targetVector.x = -this.targetVector.x
-    this.targetVector.z = -this.targetVector.z
-    this.speed = 6
-    setTimeout(() => {
-      this.speed = 2
-    }, 2000)
-    console.log("res");
-    this.snakeTarget = null
-    this.timeAI = Time.get_timeGame()
-    this.stepTimeAI = 3    // sau 2s 
+    if (!this.reverse) {
+      this.reverse = true
+      var vector = new Vec3().copy(this.entity.move.getVector())
+      var angle = Math.atan2(vector.x, vector.z);
+      angle = (angle * Math.PI) / 180
+      var tmp = Helper.randomFloor(110, 250)
+      angle += tmp
+      const x = Math.cos(angle);
+      const y = Math.sin(angle);
+      this.targetVector = new pc.Vec3(x, 0, y);
+      this.speed = 6
+      setTimeout(() => {
+        this.speed = 2
+        this.reverse = false
+      }, 2000)
+      this.snakeTarget = null
+      this.timeAI = Time.get_timeGame()
+      this.stepTimeAI = 3    // sau 2s 
+    }
   },
 
   findSnakeTarget() {

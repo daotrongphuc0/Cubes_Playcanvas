@@ -15,8 +15,33 @@
         "type": "texture"
     },
     {
+        "key": "bt_pause",
+        "url": "assets/images/pause.png",
+        "type": "texture"
+    },
+    {
+        "key": "bt_continue",
+        "url": "assets/images/continue.png",
+        "type": "texture"
+    },
+    {
         "key": "bt_speed",
         "url": "assets/images/btSpeed1.png",
+        "type": "texture"
+    },
+    {
+        "key": "dotmap1",
+        "url": "assets/images/dotmap.jpg",
+        "type": "texture"
+    },
+    {
+        "key": "bt_play",
+        "url": "assets/images/Cool_Game_Buttons.png",
+        "type": "texture"
+    },
+    {
+        "key": "bt_point",
+        "url": "assets/images/point.png",
         "type": "texture"
     },
     {
@@ -33,5 +58,20 @@
         "key": "box",
         "url": "assets/model/cube.glb",
         "type": "model"
+    },
+    {
+        "key": "eatsound",
+        "url": "assets/sounds/eat.wav",
+        "type": "audio"
+    },
+    {
+        "key": "gamesound",
+        "url": "assets/sounds/game.mp3",
+        "type": "audio"
+    },
+    {
+        "key": "homesound",
+        "url": "assets/sounds/home.mp3",
+        "type": "audio"
     }
 ]

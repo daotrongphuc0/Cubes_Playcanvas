@@ -153,16 +153,24 @@ export class Snake extends Cube {
   cutTail(cube) {
     if (!cube.manager) { return }
 
-    var cubess = cube.manager.cubes
-    for (var i = cubess.length - 1; i >= 0; i--) {
-      cubess[i].script.destroy("moveWithPath")
-      var tmp = cubess[i]
-      cubess[i].parent.removeChild(cubess[i])
-      tmp.destroy()
-      cubess.splice(i, 1)
-      if (cubess[i] === cube) {
+    var cubes = cube.manager.cubes
+    for (var i = cubes.length - 1; i >= 0; i--) {
+      if (cubes[i] === cube) {
+        cubes[i].script.destroy("moveWithPath")
+        cubes.splice(i, 1)
+        cube.destroy()
         break;
       }
+
+      var tmp_cube = new Cube(cubes[i].number)
+      tmp_cube.setLocalPosition(cubes[i].getLocalPosition().x, 0, cubes[i].getLocalPosition().z)
+      let rot = cubes[i].getEulerAngles();
+      tmp_cube.setEulerAngles(rot.x, rot.y, rot.z);
+      SceneManager.currentScene.addChild(tmp_cube)
+      SceneManager.currentScene.cubes.push(tmp_cube)
+      cube.manager.spawner.despawn(cubes[i])
+      cubes.splice(i, 1)
+
     }
   }
 

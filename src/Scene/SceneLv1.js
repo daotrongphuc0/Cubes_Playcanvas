@@ -300,7 +300,7 @@ export class SceneLv1 extends Scene {
   spawn(cube = new Cube(2)) {
     var x = Helper.randomFloor(-data.background.size[0] / 2 - 1, data.background.size[0] / 2 - 1)
     var y = Helper.randomFloor(-data.background.size[1] / 2, data.background.size[1] / 2)
-    var num = Helper.randomFloor(0, 4)
+    var num = Helper.randomFloor(1, 4)
 
     cube.setLocalPosition(x, 0, y)
     this.wall.forEach(element => {

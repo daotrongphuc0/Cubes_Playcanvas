@@ -12,12 +12,14 @@ export const DetectPositionChanged = Script.createScript({
   currentPosition: new Vec3(),
 
   update() {
-    this.currentPosition = this.entity.getPosition();
-    if (this.currentPosition.distance(this.lastPosition) > this.delta) {
-      this.lastPosition.x = this.currentPosition.x;
-      this.lastPosition.y = this.currentPosition.y;
-      this.lastPosition.z = this.currentPosition.z;
-      this.onPositionChanged(this.currentPosition.clone());
+    if (!SceneManager.currentScene.isPause) {
+      this.currentPosition = this.entity.getPosition();
+      if (this.currentPosition.distance(this.lastPosition) > this.delta) {
+        this.lastPosition.x = this.currentPosition.x;
+        this.lastPosition.y = this.currentPosition.y;
+        this.lastPosition.z = this.currentPosition.z;
+        this.onPositionChanged(this.currentPosition.clone());
+      }
     }
   },
 });

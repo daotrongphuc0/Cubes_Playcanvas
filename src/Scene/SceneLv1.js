@@ -82,48 +82,39 @@ export class SceneLv1 extends Scene {
 
   keydown(event) {
     if (event.keyCode === 32) {
-      this.onSpeedButtonDown()
+      this.player.activeAcceleration(GameConstant.PLAYER_SPEED_UP)
     }
+
+    if (event.keyCode === 27 && !this.pressEsc) {
+      if (this.isPause) {
+        this.gameContinue()
+      } else {
+        this.gamePause()
+      }
+      this.pressEsc = true
+    }
+  }
+
+  gamePause() {
+    this.isPause = true
+    this.tweenSpawn.stop()
+    this.ShowGamePause()
+  }
+
+  gameContinue() {
+    this.isPause = false
+    this.tweenSpawn.start()
+    this.ShowGamePlay()
   }
 
   keyup(event) {
     if (event.keyCode === 32) {
-      this.onSpeedButtonUp()
+      this.player.activeDeceleration(GameConstant.PLAYER_SPEED)
     }
-  }
 
-  onSpeedButtonDown() {
-    this.player.setSpeedIncrease(GameConstant.PLAYER_SPEED_UP)
-  }
-  onSpeedButtonUp() {
-    this.player.setSpeedReduce(GameConstant.PLAYER_SPEED)
-  }
-
-  _initInputBtMove() {
-    this.screenplay.BgbtMove.element.on('mousedown', this.onBtMoveDown, this)
-    this.screenplay.BgbtMove.element.on('mousemove', this.onBtMoveMove, this)
-    this.screenplay.BgbtMove.element.on('mouseup', this.onBtMoveUp, this)
-    this.screenplay.BgbtMove.element.on('touchstart', this.onBtMoveDown, this)
-    this.screenplay.BgbtMove.element.on('touchmove', this.onBtMoveMove, this)
-    this.screenplay.BgbtMove.element.on('touchend', this.onBtMoveUp, this)
-  }
-
-  onBtMoveDown(event) {
-    this.touchedDown = true
-    this.downPos.x = event.x
-    this.downPos.y = event.y
-  }
-
-  onBtMoveMove(event) {
-    if (this.touchedDown) {
-      this.player.move.setVector(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
-      this.screenplay.setMove(Helper.getVector(this.downPos.x, this.downPos.y, event.x, event.y))
+    if (event.keyCode === 27) {
+      this.pressEsc = false
     }
-  }
-
-  onBtMoveUp(event) {
-    this.touchedDown = false
-    this.screenplay.setDefault()
   }
 
   _initBackground() {

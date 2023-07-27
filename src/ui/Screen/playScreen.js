@@ -1,20 +1,24 @@
 import { Vec2, Vec4 } from "playcanvas";
 import { GameConstant } from "../../GameConstant";
 import { UIScreen } from "../UIScreen"
-import { ButtonSpeed } from "../ui/buttonSpeed";
-import { ButtonMove } from "../ui/buttonMove";
-import { BgButtonMove } from "../ui/bg_buttonMove";
+import { ButtonSpeed } from "../uiButton/buttonSpeed";
+import { ButtonMove } from "../uiButton/buttonMove";
+import { BgButtonMove } from "../uiButton/bg_buttonMove";
 import { SceneManager } from "../../Scene/SceneManager";
+import { Helper } from "../../Helper/Helper";
+import { ButtonPause } from "../uiButton/buttonPause";
+import { Util } from "../../Helper/util";
 
 
 export class PlayScreen extends UIScreen {
   constructor() {
     super(GameConstant.SCREEN_PLAY);
     this._initButtonControls();
+    this.touchedDown = false
+    this.downPos = new Vec2()
   }
 
   _initButtonControls() {
-
     this.btSpeed = new ButtonSpeed({
       anchor: new Vec4(0.8, 0.3, 0.8, 0.3),
       pivot: new Vec2(0.5, 0.5),

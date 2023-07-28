@@ -63,6 +63,7 @@ export class SceneLv1 extends Scene {
     this._initBackground();
     this.spawns()
 
+
     var newCube = new Cube(2048)
     this.addChild(newCube)
 
@@ -172,14 +173,14 @@ export class SceneLv1 extends Scene {
   _initSnake() {
     this.create_player("You", 2, new Vec3(0, 0, -15))
     this.create_snake("Long", 2, new Vec3(15, 0, 0));
-    this.create_snake("Blaze", 64, new Vec3(-15, 0, 0));
-    this.create_snake("Storm", 2, new Vec3(0, 0, 15));
-    this.create_snake("Cobra", 256, new Vec3(0, 0, -9));
-    this.create_snake("Shadow", 1024, new Vec3(-45, 0, -45));
-    this.create_snake("Phoenix", 2048, new Vec3(40, 0, 40));
-    this.create_snake("Frost", 1024, new Vec3(35, 0, -35));
-    this.create_snake("Viper", 4, new Vec3(-35, 0, 35));
-
+    this.create_snake("Blaze", 64, new Vec3(0, 0, 15));
+    // this.create_snake("Storm", 2, new Vec3(0, 0, 15));
+    // this.create_snake("Cobra", 256, new Vec3(0, 0, -9));
+    // this.create_snake("Shadow", 1024, new Vec3(-45, 0, -45));
+    // this.create_snake("Phoenix", 2048, new Vec3(40, 0, 40));
+    // this.create_snake("Frost", 1024, new Vec3(35, 0, -35));
+    // this.create_snake("Viper", 4, new Vec3(-35, 0, 35));
+    this.ui.getScreen(GameConstant.SCREEN_PLAY).updateRanking()
   }
 
   _initCamera() {
@@ -251,7 +252,7 @@ export class SceneLv1 extends Scene {
   }
 
   snakeDie(snake) {
-    this.ui.getScreen(GameConstant.SCREEN_PLAY).updateRanking()
+
     if (snake === this.player) {
       this.ShowGameOver()
     }
@@ -283,6 +284,7 @@ export class SceneLv1 extends Scene {
         break;
       }
     }
+    this.ui.getScreen(GameConstant.SCREEN_PLAY).updateRanking()
   }
 
   spawns() {

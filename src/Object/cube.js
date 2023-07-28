@@ -5,6 +5,7 @@ import { AssetsLoader } from "../assets/AssetsLoader";
 import { Helper } from "../Helper/Helper";
 import { SceneManager } from "../Scene/SceneManager";
 import { Wall } from "./Wall";
+import { BoxCollider } from "../physics/scripts/boxCollider";
 
 export class Cube extends Entity {
   constructor(number = 64) {

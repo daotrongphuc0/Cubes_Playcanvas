@@ -8,6 +8,7 @@ import { Tween } from "./systems/tween/tween"
 import { GameConstant } from "./GameConstant";
 import { SceneLv1 } from "./Scene/SceneLv1";
 import { PlayScreen } from "./ui/Screen/playScreen";
+import { Physics } from "./physics/physics";
 export class Game {
     static init() {
         const canvas = document.createElement("canvas");
@@ -30,7 +31,7 @@ export class Game {
         WasmModule.getInstance("Ammo", () => {
             AssetsLoader.loadAssets(this.app)
         });
-        this.app.systems.rigidbody.gravity.set(0, -0, 0)
+        this.app.systems.rigidbody.gravity.set(0, 0, 0)
 
         this.app.on("initialize", () => {
             document.addEventListener("keydown", (event) => {
@@ -50,6 +51,7 @@ export class Game {
         InputManager.init(this.app);
         Time.init(this.app);
         Tween.init(this.app);
+        Physics.init(this.app);
         this.app.start();
         this.app.on("update", this.update, this);
     }

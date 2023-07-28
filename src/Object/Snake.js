@@ -10,6 +10,9 @@ import { MoveDueToColis } from "../scripts/move/MoveDueToColis";
 import data from "../../assets/json/datalv1.json";
 import { Audio } from "../systems/sound/Audio";
 import { SpawningEvent } from "../scripts/spawningEvent";
+import { BoxCollider } from "../physics/scripts/boxCollider";
+import { CollisionTag } from "../physics/collisionTag";
+import { CollisionEvent } from "../physics/collissionEvent";
 
 
 export class Snake extends Cube {
@@ -37,6 +40,12 @@ export class Snake extends Cube {
       speed: GameConstant.PLAYER_SPEED,
     })
 
+    this.collider = this.addScript(BoxCollider, {
+      scale: new pc.Vec3(scale, scale, scale),
+      tag: CollisionTag.Snake
+    });
+    this.collider.on(CollisionEvent.OnCollide, this.onCollide, this);
+
     this.addComponent("rigidbody", {
       type: "kinematic",
     });
@@ -48,16 +57,6 @@ export class Snake extends Cube {
 
     this.collision.on('collisionstart', (result) => {
       var otherEntity = result.other;
-
-      if (otherEntity instanceof Wall) {
-        this.reverseDirection()
-        return
-      }
-
-      if (otherEntity instanceof Item) {
-        this.collisionItem(otherEntity)
-        return
-      }
 
       if (otherEntity instanceof Snake) {
         this.collisionSnake(otherEntity)
@@ -82,6 +81,14 @@ export class Snake extends Cube {
       }
 
     })
+  }
+
+  onCollide(other) {
+    if (other.tag === CollisionTag.Wall) {
+      this.reverseDirection();
+    } else if (other.tag === CollisionTag.Item) {
+      this.collisionItem(other.entity);
+    }
   }
 
   collisionCube(otherEntity) {

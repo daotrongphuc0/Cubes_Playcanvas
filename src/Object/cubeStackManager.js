@@ -5,6 +5,8 @@ import { Time } from "../systems/time/time";
 import { Helper } from "../Helper/Helper";
 import { GameConstant } from "../GameConstant";
 import { CheckUpdateSnake } from "../scripts/checkUpdateSnake";
+import { SceneManager } from "../Scene/SceneManager";
+import { SpawningEvent } from "../scripts/spawningEvent";
 
 
 export const CubeStackManagerEvent = Object.freeze({
@@ -21,8 +23,8 @@ export class CubeStackManager extends Entity {
     this.stackSpace = stackSpace;
     this.spawner = this.addScript(Spawner, {
       class: Cube,
-      poolSize: 0,
-      args: 16
+      poolSize: 10,
+      args: 2
     });
     this._checkUpdateSnake = this.addScript(CheckUpdateSnake, {
       timeCheck: 1.5,
@@ -37,7 +39,7 @@ export class CubeStackManager extends Entity {
     });
 
     if (this.positionQueue.length > GameConstant.LIMIT_TIME_POS_QUEUE / Time.dt) {
-      this.positionQueue.splice(0, this.positionQueue.length - Math.floor(GameConstant.LIMIT_TIME_POS_QUEUE / Time.dt))
+      this.positionQueue.splice(0, this.positionQueue.length - Math.floor(GameConstant.LIMIT_TIME_POS_QUEUE - 5 / Time.dt))
     }
   }
 
@@ -87,6 +89,7 @@ export class CubeStackManager extends Entity {
     cube.setEulerAngles(cubeAhead.getEulerAngles());
     let delayTime = isFirstCube ? Helper.getScaleByNumber(this.cubes[0].number) * 0.1 + Helper.getScaleByNumber(this.player.number) * 0.1 : cubeAhead.mover.delayTime + 0.1;
     cube.reset(delayTime);
+    cube.updateChance(num)
 
     for (i; i < this.cubes.length; i++) {
       this.cubes[i].reset(this.cubes[i - 1].mover.delayTime + Helper.getScaleByNumber(this.cubes[i].number) * 0.2
@@ -108,9 +111,11 @@ export class CubeStackManager extends Entity {
     var isUpdate = false
     var x = 1;
     if (this.cubes[0] && this.player.number === this.cubes[0].number) {
+      console.log(this.player.number + " " + this.cubes[0].number);
       this.player.levelUp()
-      this.cubes[0].destroy()
-      // this.spawner.despawn(this.cubes[0])
+      SceneManager.currentScene.ui.getScreen(GameConstant.SCREEN_PLAY).updateRanking()
+      // this.cubes[0].destroy()
+      this.cubes[0].fire(SpawningEvent.Despawn)
       this.cubes.splice(0, 1)
       this.cubes[0]?.reset(Helper.getScaleByNumber(this.cubes[0].number) * 0.1
         + Helper.getScaleByNumber(this.player.number) * 0.1)
@@ -118,13 +123,14 @@ export class CubeStackManager extends Entity {
         this.cubes[i].reset(this.cubes[i - 1].mover.delayTime + Helper.getScaleByNumber(this.cubes[i].number) * 0.4
           + Helper.getScaleByNumber(this.cubes[i - 1].number) * 0.4)
       }
-      x++
+      x += 2
       isUpdate = true
     }
     for (x; x < this.cubes.length; x++) {
       if (this.cubes[x].number === this.cubes[x - 1].number) {
         this.cubes[x - 1].levelUp()
-        this.cubes[x].destroy()
+        // this.cubes[x].destroy()
+        this.cubes[x].fire(SpawningEvent.Despawn)
         // this.spawner.despawn(this.cubes[x])
         this.cubes.splice(x, 1)
 

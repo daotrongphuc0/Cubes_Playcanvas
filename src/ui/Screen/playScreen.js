@@ -8,7 +8,8 @@ import { SceneManager } from "../../Scene/SceneManager";
 import { Helper } from "../../Helper/Helper";
 import { ButtonPause } from "../uiButton/buttonPause";
 import { Util } from "../../Helper/util";
-
+import { TextFrame } from "../uiButton/textFrame";
+import { BackgrondRanking } from "../background/bgRanking";
 
 export class PlayScreen extends UIScreen {
   constructor() {
@@ -16,6 +17,30 @@ export class PlayScreen extends UIScreen {
     this._initButtonControls();
     this.touchedDown = false
     this.downPos = new Vec2()
+    this._initSnakeRankings();
+  }
+
+  _initSnakeRankings() {
+    this.textEnemys = new TextFrame({
+      anchor: new Vec4(0.5, 0.98, 0.5, 0.98),
+      pivot: new Vec2(0.5, 0.5),
+      margin: new Vec4(),
+      fontSize: 25,
+      text: "Enemys : 0",
+    });
+    this.addChild(this.textEnemys);
+
+    this.ranking = new BackgrondRanking({
+      anchor: new Vec4(0, 1, 0, 1),
+      pivot: new Vec2(0, 1),
+      margin: new Vec4(),
+    });
+    this.addChild(this.ranking);
+  }
+
+  updateRanking() {
+    this.ranking.updateSnake()
+    this.textEnemys.element.text = `Enemys : ${SceneManager.currentScene.snakes.length - 1}`
   }
 
   _initButtonControls() {

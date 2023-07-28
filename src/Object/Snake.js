@@ -9,6 +9,7 @@ import { SceneManager } from "../Scene/SceneManager";
 import { MoveDueToColis } from "../scripts/move/MoveDueToColis";
 import data from "../../assets/json/datalv1.json";
 import { Audio } from "../systems/sound/Audio";
+import { SpawningEvent } from "../scripts/spawningEvent";
 
 
 export class Snake extends Cube {
@@ -116,6 +117,7 @@ export class Snake extends Cube {
   }
 
   collisionItem(item) {
+    if (item.isDisable) { return }
     if (item.type == "itemx2") {
       this.eatItemX2();
     }
@@ -131,14 +133,17 @@ export class Snake extends Cube {
       setTimeout(() => {
         this.eatItemSpeedUp = false
         this.setSpeedReduce(GameConstant.PLAYER_SPEED)
-
       }, 4000)
     }
 
     SceneManager.currentScene.removeChild(item);
+    item.isDisable = true
     setTimeout(() => {
       item.reloadItem(Helper.randomFloor(0, data.items.count))
       SceneManager.currentScene.addChild(item);
+      // item.setLocalPosition(localPosi.x, 0.1, localPosi.z)
+      item.isDisable = false
+      console.log("Disable");
     }, 15000)
   }
 
@@ -165,9 +170,9 @@ export class Snake extends Cube {
     var cubes = cube.manager.cubes
     for (var i = cubes.length - 1; i >= 0; i--) {
       if (cubes[i] === cube) {
-        cubes[i].script.destroy("moveWithPath")
+        // cubes[i].script.destroy("moveWithPath")
         cubes.splice(i, 1)
-        cube.destroy()
+        cube.fire(SpawningEvent.Despawn)
         break;
       }
 
@@ -177,7 +182,8 @@ export class Snake extends Cube {
       tmp_cube.setEulerAngles(rot.x, rot.y, rot.z);
       SceneManager.currentScene.addChild(tmp_cube)
       SceneManager.currentScene.cubes.push(tmp_cube)
-      cube.manager.spawner.despawn(cubes[i])
+      // cube.manager.spawner.despawn(cubes[i])
+      cubes[i].fire(SpawningEvent.Despawn)
       cubes.splice(i, 1)
 
     }
@@ -185,18 +191,21 @@ export class Snake extends Cube {
 
   eatItemX2() {
     this.levelUp();
+    SceneManager.currentScene.ui.getScreen(GameConstant.SCREEN_PLAY).updateRanking()
     this.cubeStack.cubes.forEach(element => {
       element.levelUp()
     })
   }
 
   setSpeedIncrease(speed) {
-    this.speedUp = true
-    this.move.setSpeed(speed)
-    if (this.cubeStack) {
-      this.cubeStack.cubes.forEach(element => {
-        element.speedIncrease(speed)
-      });
+    if (!this.speedUp) {
+      this.speedUp = true
+      this.move.setSpeed(speed)
+      if (this.cubeStack) {
+        this.cubeStack.cubes.forEach(element => {
+          element.speedIncrease(speed)
+        });
+      }
     }
   }
 
@@ -215,12 +224,14 @@ export class Snake extends Cube {
   }
 
   setSpeedReduce(speed) {
-    this.speedUp = false
-    this.move.setSpeed(speed)
-    if (this.cubeStack) {
-      this.cubeStack.cubes.forEach(element => {
-        element.speedReduce(speed)
-      });
+    if (this.speedUp) {
+      this.speedUp = false
+      this.move.setSpeed(speed)
+      if (this.cubeStack) {
+        this.cubeStack.cubes.forEach(element => {
+          element.speedReduce(speed)
+        });
+      }
     }
   }
 

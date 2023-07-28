@@ -11,12 +11,13 @@ export class Time {
   }
 
   static update(dt) {
+    this._current += dt * this.scale;
     if (!SceneManager.currentScene?.isPause) {
       this._dt = dt * this.scale;
     } else {
       this._dt = 0
     }
-    this._current += this._dt;
+
     this.time_game += this._dt;
   }
 

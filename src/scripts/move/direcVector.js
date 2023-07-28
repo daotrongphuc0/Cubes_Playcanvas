@@ -117,8 +117,12 @@ export const DirecVector = Script.createScript({
       }
       this.timeAI = Time.get_timeGame()
       this.stepTimeAI = 2
+      this.entity.activeDeceleration(GameConstant.PLAYER_SPEED)
     }
     else {
+      if (this.entity.timeSpeedUp >= 2) {
+        this.entity.activeAcceleration(GameConstant.PLAYER_SPEED_UP)
+      }
       this.getVectorBySnakeTarget()
     }
   },

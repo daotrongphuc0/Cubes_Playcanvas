@@ -2,8 +2,6 @@ import { Vec2, Vec3, Vec4, Entity, ELEMENTTYPE_TEXT, Color } from "playcanvas";
 import { GameConstant } from "../../GameConstant";
 import { UIScreen } from "../UIScreen";
 import { BackgrondScreen } from "../background/backgroundScreen";
-import { AssetsLoader } from "../../assets/AssetsLoader";
-import { Helper } from "../../Helper/Helper";
 import { ButtonSpeed } from "../uiButton/buttonSpeed";
 import { ButtonMove } from "../uiButton/buttonMove";
 import { BgButtonMove } from "../uiButton/bg_buttonMove";
@@ -13,6 +11,7 @@ import { TextFrame } from "../uiButton/textFrame";
 import { ButtonPoint } from "../uiButton/buttonPoint";
 import { Util } from "../../Helper/util";
 import { SceneManager } from "../../Scene/SceneManager";
+import { Tween } from "../../systems/tween/tween";
 
 
 export class StartScreen extends UIScreen {
@@ -23,6 +22,7 @@ export class StartScreen extends UIScreen {
     }
 
     _initButtonControls() {
+
         this.btSpeed = new ButtonSpeed({
             anchor: new Vec4(0.8, 0.3, 0.8, 0.3),
             pivot: new Vec2(0.5, 0.5),
@@ -80,13 +80,18 @@ you can press the ESC button`,
             anchor: new Vec4(0.5, 0.01, 0.5, 0.01),
             pivot: new Vec2(0.5, 0),
             margin: new Vec4(),
-            text: "Tap or click on the screen to start",
+            text: "Click or tap an empty space on the screen to start",
             fontSize: 16
         });
         this.addChild(this.textTapToStart);
-
-
-
+        Tween.createCountTween({
+            duration: 0.3,
+            loop: true,
+            repeatDelay: 0.3,
+            onRepeat: () => {
+                this.textTapToStart.element.opacity = 1 - this.textTapToStart.element.opacity
+            },
+        }).start();
 
         this.btMove = new ButtonMove({
             anchor: new Vec4(0.2, 0.3, 0.2, 0.3),
@@ -121,6 +126,7 @@ button and move to control snake`,
         this.addChild(this.buttonPoint3);
 
     }
+
 
     _initBackground() {
         this.bg = new BackgrondScreen({

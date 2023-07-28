@@ -14,6 +14,7 @@ export const GameConstant = Object.freeze({
     SCREEN_PLAY: "PlayScreen",
     SCREEN_START: "StartScreen",
     SCREEN_PAUSE: "PauseScreen",
+    SCREEN_WIN: "WinScreen",
 
     PLAYER_SPEED: 3,
     PLAYER_SPEED_UP: 5,
@@ -27,7 +28,7 @@ export const GameConstant = Object.freeze({
 
     DEFAULT_LOCATION_CAMERA: new Vec3(-10, 25, 0),
 
-    DEFAULT_HEIGHT_WALL: 1.5,
+    DEFAULT_HEIGHT_WALL: 4.5,
     DEFAULT_COLOR_WALL: new Color(85 / 255, 85 / 255, 85 / 255),
 
     HEIGHT_ITEM: 0.01,
@@ -35,7 +36,7 @@ export const GameConstant = Object.freeze({
 
     SIZE_WALL_AROUND: 5,
 
-    LIMIT_TIME_POS_QUEUE: 10,
+    LIMIT_TIME_POS_QUEUE: 20,
 
     DISTANCE_SNAKE_REGIME: 12
 });

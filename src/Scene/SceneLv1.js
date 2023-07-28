@@ -22,6 +22,7 @@ import { PauseScreen } from "../ui/Screen/pauseScreen";
 import { Audio } from "../systems/sound/Audio";
 import { SoundEat } from "../scripts/soundEat";
 import { SpawningEvent } from "../scripts/spawningEvent";
+import { WinScreen } from "../ui/Screen/winScreen";
 
 
 export class SceneLv1 extends Scene {
@@ -35,7 +36,8 @@ export class SceneLv1 extends Scene {
       new PlayScreen(),
       new KilledScreen(),
       new StartScreen(),
-      new PauseScreen()
+      new PauseScreen(),
+      new WinScreen()
     );
     this.ShowStart()
     this._initLight();
@@ -70,11 +72,11 @@ export class SceneLv1 extends Scene {
       repeatDelay: 0.5,
       onRepeat: () => {
         if (this.cubesWaiting.length > 0) {
-          var cube_tmp = this.cubesWaiting[0]
+          // var cube_tmp = this.cubesWaiting[0]
+          this.spawn(this.cubesWaiting[0])
+          this.addChild(this.cubesWaiting[0])
+          this.cubes.push(this.cubesWaiting[0])
           this.cubesWaiting.splice(0, 1)
-          this.spawn(cube_tmp)
-          this.addChild(cube_tmp)
-          this.cubes.push(cube_tmp)
         }
       },
     });
@@ -107,10 +109,12 @@ export class SceneLv1 extends Scene {
     this.isPause = true
     this.tweenSpawn.stop()
     this.ShowGamePause()
+    this.sound.stop("homesound")
   }
 
   gameContinue() {
     this.isPause = false
+    this.sound.play("homesound")
     this.tweenSpawn.start()
     this.ShowGamePlay()
   }
@@ -159,22 +163,23 @@ export class SceneLv1 extends Scene {
     })
 
     data.items.list.forEach(element => {
-      var item = new Item(Helper.randomFloor(0, data.items.count));
+      var item = new Item(Helper.randomFloor(0, data.items.count - 1));
       item.setLocalPosition(element.position[0], 0.1, element.position[2])
       this.addChild(item)
     })
   }
 
   _initSnake() {
-    this.create_player("aaaa", 4086, new Vec3(0, 0, -15))
-    this.create_snake("bbbb", 2, new Vec3(15, 0, 0))
-    this.create_snake("hhhh", 256, new Vec3(-15, 0, 0))
-    this.create_snake("iiii", 2, new Vec3(0, 0, 15))
-    this.create_snake("cccc", 256, new Vec3(0, 0, -15))
-    this.create_snake("dddd", 1024, new Vec3(-45, 0, -45))
-    this.create_snake("eeee", 2048, new Vec3(40, 0, 40))
-    this.create_snake("ffff", 1024, new Vec3(35, 0, -35))
-    this.create_snake("gggg", 2048, new Vec3(-35, 0, 35))
+    this.create_player("You", 2, new Vec3(0, 0, -15))
+    this.create_snake("Long", 2, new Vec3(15, 0, 0));
+    this.create_snake("Blaze", 64, new Vec3(-15, 0, 0));
+    this.create_snake("Storm", 2, new Vec3(0, 0, 15));
+    this.create_snake("Cobra", 256, new Vec3(0, 0, -9));
+    this.create_snake("Shadow", 1024, new Vec3(-45, 0, -45));
+    this.create_snake("Phoenix", 2048, new Vec3(40, 0, 40));
+    this.create_snake("Frost", 1024, new Vec3(35, 0, -35));
+    this.create_snake("Viper", 4, new Vec3(-35, 0, 35));
+
   }
 
   _initCamera() {
@@ -246,9 +251,9 @@ export class SceneLv1 extends Scene {
   }
 
   snakeDie(snake) {
+    this.ui.getScreen(GameConstant.SCREEN_PLAY).updateRanking()
     if (snake === this.player) {
       this.ShowGameOver()
-      this.ui.getScreen(GameConstant.SCREEN_GAME_OVER).updateTextScore(this.player.number)
     }
     var i = 0;
     for (i; i < this.snakes.length; i++) {
@@ -262,11 +267,17 @@ export class SceneLv1 extends Scene {
         var pos = snake.getLocalPosition()
         var cubeReplace = new Cube(snake.number)
         cubeReplace.setLocalPosition(pos.x, pos.y, pos.z)
-        var num = Math.log2(this.player.number) + Helper.randomFloor(-1, 2)
         this.removeChild(snake)
-        this.create_snake(snake.name, Math.pow(2, num), this.randomPos())
+        this.removeChild(snake.cubeStack)
+        snake.cubeStack.script.destroy("checkupdatesnake")
         snake.cubeStack.destroy()
         snake.destroy()
+        if (this.snakes.length <= 1) {
+          console.log("show game win");
+          this.ShowGameWin()
+        }
+
+        console.log(this.snakes.length);
 
         SceneManager.currentScene.addChild(cubeReplace)
         break;
@@ -308,21 +319,19 @@ export class SceneLv1 extends Scene {
   }
 
   reloadGame() {
-    this.ui.setScreenActive(GameConstant.SCREEN_PLAY);
-    this.ui.setScreenActive(GameConstant.SCREEN_GAME_OVER, false)
+    this.isPause = false
+    this.tweenSpawn.start()
+    this.ShowGamePlay()
     for (var i = 0; i < this.snakes.length; i++) {
       for (var j = this.snakes[i].cubeStack.cubes.length - 1; j >= 0; j--) {
         this.snakes[i].cubeStack.positionQueue = []
         this.snakes[i].cubeStack.spawner.despawn(this.snakes[i].cubeStack.cubes[j])
         this.snakes[i].cubeStack.cubes.splice(j, 1)
       }
-      // var pos = this.randomPos()
-      // var num = Helper.randomFloor(1, 4)
-      // this.snakes[i].setLocalPosition(pos.x, 0, pos.y)
-      // this.snakes[i].updateChance(Math.pow(2, num))
       this.removeChild(this.snakes[i])
       this.snakes[i].destroy()
     }
+    this.snakes = []
     this.player = null
     this._initSnake()
   }
@@ -340,13 +349,18 @@ export class SceneLv1 extends Scene {
   }
 
   ShowGameOver() {
+    this.isPause = true
+    this.tweenSpawn.stop()
     this.ui.disableAllScreens();
     this.ui.setScreenActive(GameConstant.SCREEN_GAME_OVER)
+    this.ui.getScreen(GameConstant.SCREEN_GAME_OVER).updateTextScore(this.player.number)
+    this.ui.getScreen(GameConstant.SCREEN_GAME_OVER).updateTextTime()
   }
 
   ShowGamePlay() {
     this.ui.disableAllScreens();
     this.ui.setScreenActive(GameConstant.SCREEN_PLAY)
+    this.ui.getScreen(GameConstant.SCREEN_PLAY).updateRanking()
   }
 
   ShowStart() {
@@ -357,6 +371,14 @@ export class SceneLv1 extends Scene {
   ShowGamePause() {
     this.ui.disableAllScreens();
     this.ui.setScreenActive(GameConstant.SCREEN_PAUSE)
+  }
+  ShowGameWin() {
+    this.isPause = true
+    this.tweenSpawn.stop()
+    this.ui.disableAllScreens();
+    this.ui.setScreenActive(GameConstant.SCREEN_WIN)
+    this.ui.getScreen(GameConstant.SCREEN_WIN).updateTextScore(this.player.number)
+    this.ui.getScreen(GameConstant.SCREEN_WIN).updateTextTime()
   }
 }
 

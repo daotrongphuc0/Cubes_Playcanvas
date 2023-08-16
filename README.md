@@ -1,4 +1,4 @@
-# pixijs setup
+# Playcanvas setup
 
 ## Getting started
 
